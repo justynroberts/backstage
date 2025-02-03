@@ -1,0 +1,231 @@
+# ───────────────────────────────────────────────────
+# 1️⃣ Frontend Service
+# ───────────────────────────────────────────────────
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: cloud-dashboard
+  description: The customer-facing web dashboard for Nimbus Cloud
+  annotations:
+    github.com/project-slug: nimbus-tech/cloud-dashboard
+    pagerduty.com/service-id: PD123456
+    backstage.io/techdocs-ref: dir:.
+spec:
+  type: website
+  owner: platform-engineering
+  lifecycle: production
+  system: nimbus-cloud
+
+---
+# ───────────────────────────────────────────────────
+# 2️⃣ Backend Service
+# ───────────────────────────────────────────────────
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: cloud-api
+  description: Core backend service handling business logic
+  annotations:
+    github.com/project-slug: nimbus-tech/cloud-api
+    pagerduty.com/service-id: PD789012
+spec:
+  type: service
+  owner: backend-engineering
+  lifecycle: production
+  system: nimbus-cloud
+
+---
+# ───────────────────────────────────────────────────
+# 3️⃣ Billing Worker Service
+# ───────────────────────────────────────────────────
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: billing-worker
+  description: Background worker for processing customer invoices
+  annotations:
+    github.com/project-slug: nimbus-tech/billing-worker
+spec:
+  type: service
+  owner: finance-engineering
+  lifecycle: production
+  system: nimbus-cloud
+
+---
+# ───────────────────────────────────────────────────
+# 4️⃣ Authentication API
+# ───────────────────────────────────────────────────
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: auth-service
+  description: Authentication and authorization API for Nimbus Cloud
+  tags:
+    - rest
+    - auth
+spec:
+  type: openapi
+  lifecycle: production
+  owner: security-engineering
+  definition:
+    $text: |
+      openapi: 3.0.0
+      info:
+        title: Auth API
+        version: 1.0.0
+      paths:
+        /login:
+          post:
+            responses:
+              '200':
+                description: User authenticated successfully.
+
+---
+# ───────────────────────────────────────────────────
+# 5️⃣ Payment Processing API
+# ───────────────────────────────────────────────────
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: payment-service
+  description: API for handling customer payments
+  tags:
+    - payments
+    - finance
+spec:
+  type: openapi
+  lifecycle: production
+  owner: finance-engineering
+  definition:
+    $text: |
+      openapi: 3.0.0
+      info:
+        title: Payment API
+        version: 1.0.0
+      paths:
+        /charge:
+          post:
+            responses:
+              '200':
+                description: Payment processed successfully.
+
+---
+# ───────────────────────────────────────────────────
+# 6️⃣ Platform Engineering Team
+# ───────────────────────────────────────────────────
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: platform-engineering
+  description: The team responsible for infrastructure and deployment
+spec:
+  type: team
+  profile:
+    displayName: Platform Engineering Team
+    email: platform@nimbus-tech.com
+  members:
+    - oliver.jenkins
+    - sarah.chan
+  children: []
+
+---
+# ───────────────────────────────────────────────────
+# 7️⃣ Backend Engineering Team
+# ───────────────────────────────────────────────────
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: backend-engineering
+  description: The backend services team
+spec:
+  type: team
+  profile:
+    displayName: Backend Engineering Team
+    email: backend@nimbus-tech.com
+  members:
+    - david.nguyen
+    - emily.torres
+  children: []
+
+---
+# ───────────────────────────────────────────────────
+# 8️⃣ Security Engineering Team
+# ───────────────────────────────────────────────────
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: security-engineering
+  description: The team responsible for security and compliance
+spec:
+  type: team
+  profile:
+    displayName: Security Engineering Team
+    email: security@nimbus-tech.com
+  members:
+    - mark.roberts
+    - lisa.mitchell
+  children: []
+
+---
+# ───────────────────────────────────────────────────
+# 9️⃣ Nimbus Cloud System
+# ───────────────────────────────────────────────────
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: nimbus-cloud
+  description: The cloud platform for hosting business applications
+spec:
+  owner: platform-engineering
+  domain: saas-platform
+
+---
+# ───────────────────────────────────────────────────
+# 🔟 PostgreSQL Database Resource
+# ───────────────────────────────────────────────────
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: postgres-main
+  description: PostgreSQL database for core application data
+spec:
+  type: database
+  owner: backend-engineering
+  lifecycle: production
+  dependsOn:
+    - component/cloud-api
+
+---
+# ───────────────────────────────────────────────────
+# 🔟+1 Service Scaffolding Template
+# ───────────────────────────────────────────────────
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: microservice-template
+  title: Microservice Scaffolding Template
+  description: A template for creating new microservices
+spec:
+  owner: platform-engineering
+  type: service
+  parameters:
+    - title: Provide Service Details
+      required:
+        - name
+        - owner
+      properties:
+        name:
+          type: string
+          description: Name of the new microservice
+        owner:
+          type: string
+          description: Owner team for the service
+  steps:
+    - id: fetch-base
+      name: Fetch Template
+      action: fetch:template
+      input:
+        url: ./templates/microservice-template
+        values:
+          name: ${{ parameters.name }}
+          owner: ${{ parameters.owner }}
