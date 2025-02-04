@@ -31,127 +31,101 @@ spec:
 apiVersion: backstage.io/v1alpha1
 kind: System
 metadata:
-  name: content-system
-  description: Content management system for the organization
+  name: payment-system
+  description: Payment processing and orchestration system
 spec:
-  owner: content-team
+  owner: payments-team
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: order-system
+  description: Order management and fulfillment system
+spec:
+  owner: orders-team
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: cart-system
+  description: Shopping cart and checkout system
+spec:
+  owner: checkout-team
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: inventory-system
+  description: Warehouse and inventory management system
+spec:
+  owner: logistics-team
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Group
 metadata:
-  name: content-team
-  description: Content team responsible for CMS and marketing tools
+  name: payments-team
+  description: Payments engineering team
 spec:
   type: team
   profile:
-    displayName: Content Team
-    email: content-team@example.com
+    displayName: Payments Team
+    email: payments-team@example.com
   members:
     - user: alice
     - user: bob
 ---
 apiVersion: backstage.io/v1alpha1
-kind: Component
+kind: Group
 metadata:
-  name: fraud-detector
-  description: Real-time transaction risk analysis using ML
-  annotations:
-    sagemaker/model: fraud-model-v5
-    kafka/topic: transactions-raw
-    backstage.io/techdocs-ref: dir:./fraud-detector
-  tags: [python, tensorflow, fintech]
+  name: orders-team
+  description: Order management team
 spec:
-  type: service
-  lifecycle: production
-  owner: security-team
-  system: payment-system
-  providesApis: [fraud-api]
-  dependencies:
-    - component: payment-orchestrator
-      type: provides
+  type: team
+  profile:
+    displayName: Orders Team
+    email: orders-team@example.com
+  members:
+    - user: charlie
+    - user: dave
 ---
 apiVersion: backstage.io/v1alpha1
-kind: Component
+kind: Group
 metadata:
-  name: order-orchestrator
-  description: Distributed transaction coordinator for orders
-  annotations:
-    temporal/workflow: order-fulfillment
-    redis/instance: order-state-01
-    backstage.io/techdocs-ref: dir:./order-system
-  tags: [c#, saga-pattern]
+  name: checkout-team
+  description: Checkout and cart service team
 spec:
-  type: service
-  lifecycle: production
-  owner: orders-team
-  system: order-system
-  dependencies:
-    - component: payment-orchestrator
-      type: dependsOn
-    - component: inventory-sync
-      type: dependsOn
-    - component: fraud-detector
-      type: dependsOn
+  type: team
+  profile:
+    displayName: Checkout Team
+    email: checkout-team@example.com
+  members:
+    - user: eve
+    - user: frank
 ---
 apiVersion: backstage.io/v1alpha1
-kind: Component
+kind: Group
 metadata:
-  name: cart-service
-  description: Distributed shopping cart with Redis caching
-  annotations:
-    redis/instance: cart-cluster-01
-    newrelic/apm: cart-service
-    backstage.io/techdocs-ref: dir:./cart-service
-  tags: [nodejs, redis]
+  name: logistics-team
+  description: Logistics and warehouse management team
 spec:
-  type: service
-  lifecycle: production
-  owner: checkout-team
-  system: cart-system
-  dependencies:
-    - component: inventory-sync
-      type: dependsOn
-    - component: payment-orchestrator
-      type: dependsOn
+  type: team
+  profile:
+    displayName: Logistics Team
+    email: logistics-team@example.com
+  members:
+    - user: grace
+    - user: hank
 ---
 apiVersion: backstage.io/v1alpha1
-kind: Component
+kind: Group
 metadata:
-  name: recommendation-engine
-  description: AI-powered product recommendations
-  annotations:
-    vertex-ai/model: recos-2024q2
-    bigquery/dataset: user-behavior
-    backstage.io/techdocs-ref: dir:./recommendations
-  tags: [python, pytorch]
+  name: data-team
+  description: Data science and analytics team
 spec:
-  type: service
-  lifecycle: production
-  owner: data-team
-  system: personalization
-  consumesApis: [product-api]
-  dependencies:
-    - component: product-api
-      type: dependsOn
----
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
-  name: inventory-sync
-  description: Real-time warehouse inventory synchronization
-  annotations:
-    aws/eventbridge: inventory-events
-    warehouse/erp: sap-s4hana
-    backstage.io/techdocs-ref: dir:./inventory
-  tags: [go, kafka, aws]
-spec:
-  type: service
-  lifecycle: production
-  owner: logistics-team
-  system: inventory-system
-  consumesApis: [erp-api]
-  dependencies:
-    - component: erp-adapter
-      type: dependsOn
-    - component: order-orchestrator
-      type: dependsOn
+  type: team
+  profile:
+    displayName: Data Team
+    email: data-team@example.com
+  members:
+    - user: isaac
+    - user: jack
