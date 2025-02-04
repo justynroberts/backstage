@@ -1,4 +1,3 @@
-# catalog.yml
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
@@ -24,6 +23,10 @@ spec:
   dependencies:
     - component: fraud-detector
       type: dependsOn
+    - component: order-orchestrator
+      type: dependsOn
+    - component: cart-service
+      type: dependsOn
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
@@ -41,23 +44,9 @@ spec:
   owner: security-team
   system: payment-system
   providesApis: [fraud-api]
----
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
-  name: inventory-sync
-  description: Real-time warehouse inventory synchronization
-  annotations:
-    aws/eventbridge: inventory-events
-    warehouse/erp: sap-s4hana
-    backstage.io/techdocs-ref: dir:./inventory
-  tags: [go, kafka, aws]
-spec:
-  type: service
-  lifecycle: production
-  owner: logistics-team
-  system: inventory-system
-  consumesApis: [erp-api]
+  dependencies:
+    - component: payment-orchestrator
+      type: provides
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
@@ -79,23 +68,8 @@ spec:
       type: dependsOn
     - component: inventory-sync
       type: dependsOn
----
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
-  name: recommendation-engine
-  description: AI-powered product recommendations
-  annotations:
-    vertex-ai/model: recos-2024q2
-    bigquery/dataset: user-behavior
-    backstage.io/techdocs-ref: dir:./recommendations
-  tags: [python, pytorch]
-spec:
-  type: service
-  lifecycle: production
-  owner: data-team
-  system: personalization
-  consumesApis: [product-api]
+    - component: fraud-detector
+      type: dependsOn
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
@@ -115,147 +89,47 @@ spec:
   dependencies:
     - component: inventory-sync
       type: dependsOn
+    - component: payment-orchestrator
+      type: dependsOn
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: promo-manager
-  description: Campaign and discount code management system
+  name: recommendation-engine
+  description: AI-powered product recommendations
   annotations:
-    hashicorp/vault: promo-codes
-    airflow/dag: promo-sync
-    backstage.io/techdocs-ref: dir:./promotions
-  tags: [ruby, react-admin]
-spec:
-  type: tool
-  lifecycle: production
-  owner: marketing-team
-  system: internal-tools
----
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
-  name: cms-service
-  description: Headless CMS for marketing content
-  annotations:
-    contentful/space-id: marketing-space
-    cloudfront/distribution: cms-cdn
-    backstage.io/techdocs-ref: dir:./cms
-  tags: [typescript, contentful]
+    vertex-ai/model: recos-2024q2
+    bigquery/dataset: user-behavior
+    backstage.io/techdocs-ref: dir:./recommendations
+  tags: [python, pytorch]
 spec:
   type: service
   lifecycle: production
-  owner: content-team
-  system: content-system
----
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
-  name: telemetry-pipeline
-  description: Centralized metrics and logs collection
-  annotations:
-    opensearch/cluster: logs-prod-01
-    fluentbit/config: v2
-    backstage.io/techdocs-ref: dir:./telemetry
-  tags: [go, observability]
-spec:
-  type: pipeline
-  lifecycle: production
-  owner: platform-team
-  system: observability
----
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
-  name: anomaly-detector
-  description: ML-powered business metrics monitoring
-  annotations:
-    prometheus/alertmanager: true
-    grafana/dashboard: business-kpis
-    backstage.io/techdocs-ref: dir:./anomaly-detection
-  tags: [python, prometheus]
-spec:
-  type: service
-  lifecycle: experimental
   owner: data-team
-  system: observability
+  system: personalization
+  consumesApis: [product-api]
+  dependencies:
+    - component: product-api
+      type: dependsOn
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: mobile-sdk
-  description: Cross-platform mobile commerce SDK
+  name: inventory-sync
+  description: Real-time warehouse inventory synchronization
   annotations:
-    appcenter/groups: mobile-team
-    firebase/project: mobile-analytics
-    backstage.io/techdocs-ref: dir:./mobile-sdk
-  tags: [kotlin, swift]
-spec:
-  type: library
-  lifecycle: production
-  owner: mobile-team
-  system: mobile-platform
----
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
-  name: erp-adapter
-  description: Legacy ERP system integration layer
-  annotations:
-    sap/version: ecc6.0
-    mulesoft/connector: sap-01
-    backstage.io/techdocs-ref: dir:./erp-adapter
-  tags: [java, sap]
+    aws/eventbridge: inventory-events
+    warehouse/erp: sap-s4hana
+    backstage.io/techdocs-ref: dir:./inventory
+  tags: [go, kafka, aws]
 spec:
   type: service
   lifecycle: production
-  owner: enterprise-team
-  system: legacy-integration
-  providesApis: [erp-api]
----
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
-  name: virtual-tryon
-  description: AR-powered product visualization
-  annotations:
-    arkit/version: 3.0
-    unity/project: tryon-2024
-    backstage.io/techdocs-ref: dir:./virtual-tryon
-  tags: [unity, ar]
-spec:
-  type: service
-  lifecycle: experimental
-  owner: innovation-team
-  system: emerging-tech
----
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
-  name: loyalty-blockchain
-  description: Token-based loyalty program on Hyperledger
-  annotations:
-    hyperledger/fabric: loyalty-chain
-    etherscan/contract: 0x123...abc
-    backstage.io/techdocs-ref: dir:./loyalty-blockchain
-  tags: [solidity, blockchain]
-spec:
-  type: service
-  lifecycle: development
-  owner: blockchain-team
-  system: loyalty-system
----
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
-  name: product-api
-  description: Core product catalog GraphQL API
-  annotations:
-    graphql/schema: https://api.example.com/product-schema
-    backstage.io/techdocs-ref: dir:./product-api
-  tags: [graphql, nodejs]
-spec:
-  type: api
-  lifecycle: production
-  owner: product-team
-  system: core-services
+  owner: logistics-team
+  system: inventory-system
+  consumesApis: [erp-api]
+  dependencies:
+    - component: erp-adapter
+      type: dependsOn
+    - component: order-orchestrator
+      type: dependsOn
