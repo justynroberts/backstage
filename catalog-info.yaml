@@ -16,7 +16,6 @@ metadata:
 spec:
   type: service
   lifecycle: production
-  owner: development/guest
   system: payment-system
   providesApis: [payment-api]
   consumesApis: [fraud-api]
@@ -41,7 +40,6 @@ metadata:
 spec:
   type: service
   lifecycle: production
-  owner: development/guest
   system: payment-system
   providesApis: [fraud-api]
 ---
@@ -58,7 +56,6 @@ metadata:
 spec:
   type: service
   lifecycle: production
-  owner: development/guest
   system: order-system
   dependencies:
     - component: payment-orchestrator
@@ -81,7 +78,6 @@ metadata:
 spec:
   type: service
   lifecycle: production
-  owner: development/guest
   system: cart-system
   dependencies:
     - component: inventory-sync
@@ -102,7 +98,6 @@ metadata:
 spec:
   type: service
   lifecycle: production
-  owner: development/guest
   system: inventory-system
   consumesApis: [erp-api]
   dependencies:
@@ -117,7 +112,6 @@ metadata:
   name: payment-system
   description: Payment processing and orchestration system
 spec:
-  owner: development/guest
 ---
 apiVersion: backstage.io/v1alpha1
 kind: System
@@ -125,7 +119,6 @@ metadata:
   name: order-system
   description: Order management and fulfillment system
 spec:
-  owner: development/guest
 ---
 apiVersion: backstage.io/v1alpha1
 kind: System
@@ -133,7 +126,6 @@ metadata:
   name: cart-system
   description: Shopping cart and checkout system
 spec:
-  owner: development/guest
 ---
 apiVersion: backstage.io/v1alpha1
 kind: System
@@ -141,4 +133,3 @@ metadata:
   name: inventory-system
   description: Warehouse and inventory management system
 spec:
-  owner: development/guest
