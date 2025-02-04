@@ -29,6 +29,28 @@ spec:
       type: dependsOn
 ---
 apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: content-system
+  description: Content management system for the organization
+spec:
+  owner: content-team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: content-team
+  description: Content team responsible for CMS and marketing tools
+spec:
+  type: team
+  profile:
+    displayName: Content Team
+    email: content-team@example.com
+  members:
+    - user: alice
+    - user: bob
+---
+apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: fraud-detector
