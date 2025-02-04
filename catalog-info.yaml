@@ -17,7 +17,6 @@ spec:
   type: service
   lifecycle: production
   owner: unknown
-  type: service
   lifecycle: production
   system: payment-system
   providesApis: [payment-api]
@@ -44,7 +43,6 @@ spec:
   type: service
   lifecycle: production
   owner: unknown
-  type: service
   lifecycle: production
   system: payment-system
   providesApis: [fraud-api]
@@ -63,7 +61,6 @@ spec:
   type: service
   lifecycle: production
   owner: unknown
-  type: service
   lifecycle: production
   system: order-system
   dependencies:
@@ -88,7 +85,6 @@ spec:
   type: service
   lifecycle: production
   owner: unknown
-  type: service
   lifecycle: production
   system: cart-system
   dependencies:
@@ -111,7 +107,6 @@ spec:
   type: service
   lifecycle: production
   owner: unknown
-  type: service
   lifecycle: production
   system: inventory-system
   consumesApis: [erp-api]
