@@ -1,3 +1,4 @@
+---
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
@@ -13,6 +14,10 @@ spec:
           title: Service Name
           type: string
           description: kebab-case name for the service
+        repo_name:
+          title: Repository Name
+          type: string
+          description: Name of the Git repository
         framework:
           title: Web Framework
           type: string
@@ -24,7 +29,7 @@ spec:
           default: "3.11"
   steps:
     - id: scaffold
-      name: Generate
+      name: Generate Codebase
       action: fetch:template
       input:
         url: ./templates/python-service
@@ -32,6 +37,29 @@ spec:
           name: "{{ parameters.name }}"
           framework: "{{ parameters.framework }}"
           python_version: "{{ parameters.python_version }}"
+    - id: repo
+      name: Create Repository
+      action: github:repo:create
+      input:
+        repo: "{{ parameters.repo_name }}"
+        owner: "my-org"
+        visibility: public
+    - id: push
+      name: Push Code to Repository
+      action: github:repo:push
+      input:
+        repoUrl: "github.com/my-org/{{ parameters.repo_name }}"
+    - id: ci
+      name: Setup CI/CD Pipeline
+      action: github:actions:setup
+      input:
+        repoUrl: "github.com/my-org/{{ parameters.repo_name }}"
+        workflow: "python-ci.yml"
+    - id: register
+      name: Register in Backstage
+      action: catalog:register
+      input:
+        catalogInfoUrl: "github.com/my-org/{{ parameters.repo_name }}/catalog-info.yaml"
 
 ---
 apiVersion: scaffolder.backstage.io/v1beta3
@@ -48,6 +76,10 @@ spec:
         name:
           title: Service Name
           type: string
+        repo_name:
+          title: Repository Name
+          type: string
+          description: Name of the Git repository
         package_manager:
           title: Package Manager
           type: string
@@ -60,7 +92,7 @@ spec:
           default: express
   steps:
     - id: scaffold
-      name: Generate
+      name: Generate Codebase
       action: fetch:template
       input:
         url: ./templates/node-service
@@ -68,112 +100,29 @@ spec:
           name: "{{ parameters.name }}"
           package_manager: "{{ parameters.package_manager }}"
           framework: "{{ parameters.framework }}"
-
----
-apiVersion: scaffolder.backstage.io/v1beta3
-kind: Template
-metadata:
-  name: java-service
-  title: Java Spring Boot Service
-  description: Generate a Spring Boot service with Gradle/Maven
-spec:
-  type: service
-  parameters:
-    - title: Java Service Setup
-      properties:
-        name:
-          title: Service Name
-          type: string
-        build_tool:
-          title: Build Tool
-          type: string
-          enum: [gradle, maven]
-          default: gradle
-        java_version:
-          title: Java Version
-          type: string
-          default: "21"
-  steps:
-    - id: scaffold
-      name: Generate
-      action: fetch:template
+    - id: repo
+      name: Create Repository
+      action: github:repo:create
       input:
-        url: ./templates/java-service
-        values:
-          name: "{{ parameters.name }}"
-          build_tool: "{{ parameters.build_tool }}"
-          java_version: "{{ parameters.java_version }}"
-
----
-apiVersion: scaffolder.backstage.io/v1beta3
-kind: Template
-metadata:
-  name: go-service
-  title: Go Microservice
-  description: Scaffold a Go service with Gin/Fiber framework
-spec:
-  type: service
-  parameters:
-    - title: Go Service Setup
-      properties:
-        name:
-          title: Service Name
-          type: string
-        framework:
-          title: Web Framework
-          type: string
-          enum: [gin, fiber, stdlib]
-          default: gin
-        go_version:
-          title: Go Version
-          type: string
-          default: "1.21"
-  steps:
-    - id: scaffold
-      name: Generate
-      action: fetch:template
+        repo: "{{ parameters.repo_name }}"
+        owner: "my-org"
+        visibility: public
+    - id: push
+      name: Push Code to Repository
+      action: github:repo:push
       input:
-        url: ./templates/go-service
-        values:
-          name: "{{ parameters.name }}"
-          framework: "{{ parameters.framework }}"
-          go_version: "{{ parameters.go_version }}"
-
----
-apiVersion: scaffolder.backstage.io/v1beta3
-kind: Template
-metadata:
-  name: react-frontend
-  title: React Frontend
-  description: Create a React application with Vite/Next.js
-spec:
-  type: service
-  parameters:
-    - title: React Setup
-      properties:
-        name:
-          title: App Name
-          type: string
-        framework:
-          title: Framework
-          type: string
-          enum: [vite, nextjs, remix]
-          default: vite
-        styling:
-          title: Styling Solution
-          type: string
-          enum: [css, scss, styled-components, tailwind]
-          default: tailwind
-  steps:
-    - id: scaffold
-      name: Generate
-      action: fetch:template
+        repoUrl: "github.com/my-org/{{ parameters.repo_name }}"
+    - id: ci
+      name: Setup CI/CD Pipeline
+      action: github:actions:setup
       input:
-        url: ./templates/react-app
-        values:
-          name: "{{ parameters.name }}"
-          framework: "{{ parameters.framework }}"
-          styling: "{{ parameters.styling }}"
+        repoUrl: "github.com/my-org/{{ parameters.repo_name }}"
+        workflow: "node-ci.yml"
+    - id: register
+      name: Register in Backstage
+      action: catalog:register
+      input:
+        catalogInfoUrl: "github.com/my-org/{{ parameters.repo_name }}/catalog-info.yaml"
 
 ---
 apiVersion: scaffolder.backstage.io/v1beta3
@@ -181,7 +130,7 @@ kind: Template
 metadata:
   name: terraform-module
   title: Terraform Module
-  description: Scaffold a reusable Terraform module
+  description: Scaffold a reusable Terraform module with best practices
 spec:
   type: library
   parameters:
@@ -190,6 +139,10 @@ spec:
         name:
           title: Module Name
           type: string
+        repo_name:
+          title: Repository Name
+          type: string
+          description: Name of the Git repository
         cloud:
           title: Cloud Provider
           type: string
@@ -201,7 +154,7 @@ spec:
           default: "1.6"
   steps:
     - id: scaffold
-      name: Generate
+      name: Generate Codebase
       action: fetch:template
       input:
         url: ./templates/terraform-module
@@ -209,37 +162,26 @@ spec:
           name: "{{ parameters.name }}"
           cloud: "{{ parameters.cloud }}"
           terraform_version: "{{ parameters.terraform_version }}"
-
----
-apiVersion: scaffolder.backstage.io/v1beta3
-kind: Template
-metadata:
-  name: helm-chart
-  title: Helm Chart
-  description: Generate a production-ready Helm chart
-spec:
-  type: library
-  parameters:
-    - title: Helm Chart Setup
-      properties:
-        name:
-          title: Chart Name
-          type: string
-        chart_version:
-          title: Chart Version
-          type: string
-          default: "0.1.0"
-        app_version:
-          title: App Version
-          type: string
-          default: "1.0.0"
-  steps:
-    - id: scaffold
-      name: Generate
-      action: fetch:template
+    - id: repo
+      name: Create Repository
+      action: github:repo:create
       input:
-        url: ./templates/helm-chart
-        values:
-          name: "{{ parameters.name }}"
-          chart_version: "{{ parameters.chart_version }}"
-          app_version: "{{ parameters.app_version }}"
+        repo: "{{ parameters.repo_name }}"
+        owner: "my-org"
+        visibility: public
+    - id: push
+      name: Push Code to Repository
+      action: github:repo:push
+      input:
+        repoUrl: "github.com/my-org/{{ parameters.repo_name }}"
+    - id: ci
+      name: Setup CI/CD Pipeline
+      action: github:actions:setup
+      input:
+        repoUrl: "github.com/my-org/{{ parameters.repo_name }}"
+        workflow: "terraform-ci.yml"
+    - id: register
+      name: Register in Backstage
+      action: catalog:register
+      input:
+        catalogInfoUrl: "github.com/my-org/{{ parameters.repo_name }}/catalog-info.yaml"
