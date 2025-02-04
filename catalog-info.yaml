@@ -1,42 +1,4 @@
-# ======== CORE PLATFORM ========
----
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
-  name: storefront-web
-  description: NextJS-based customer-facing storefront
-  annotations:
-    vercel.com/project-id: storefront-2x
-    lighthouse/score: https://metrics.example.com/storefront
-  tags: [nextjs, react, pwa]
-  links:
-    - url: https://admin.example.com/content
-      title: Content Manager
-      icon: edit
-spec:
-  type: website
-  lifecycle: production
-  owner: frontend-team
-  system: core-platform
-
----
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
-  name: product-api
-  description: GraphQL API for product catalog management
-  annotations:
-    datadog/apm: product-api-v12
-    snowflake/warehouse: product-warehouse
-  tags: [graphql, nodejs, apollo]
-spec:
-  type: service
-  lifecycle: production
-  owner: product-team
-  system: core-services
-
-# ======== PAYMENT ECOSYSTEM ========
----
+# catalog.yml
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
@@ -45,17 +7,23 @@ metadata:
   annotations:
     vault.io/psp-credentials: payment-secrets-v3
     sentry.io/project: payment-errors
-  tags: [java, stripe, paypal]
+    backstage.io/techdocs-ref: dir:./payment-system
+    example.com/arch-decision: "ADR-001"
   links:
-    - url: https://dashboard.stripe.com
-      title: Stripe Console
-      icon: payment
+    - url: https://api-docs.example.com/payments
+      title: API Documentation
+      icon: api
+  tags: [java, stripe, paypal]
 spec:
   type: service
   lifecycle: production
   owner: payments-team
   system: payment-system
-
+  providesApis: [payment-api]
+  consumesApis: [fraud-api]
+  dependencies:
+    - component: fraud-detector
+      type: dependsOn
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
@@ -65,14 +33,14 @@ metadata:
   annotations:
     sagemaker/model: fraud-model-v5
     kafka/topic: transactions-raw
+    backstage.io/techdocs-ref: dir:./fraud-detector
   tags: [python, tensorflow, fintech]
 spec:
   type: service
   lifecycle: production
   owner: security-team
   system: payment-system
-
-# ======== INVENTORY & ORDER MANAGEMENT ========
+  providesApis: [fraud-api]
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
@@ -82,13 +50,14 @@ metadata:
   annotations:
     aws/eventbridge: inventory-events
     warehouse/erp: sap-s4hana
+    backstage.io/techdocs-ref: dir:./inventory
   tags: [go, kafka, aws]
 spec:
   type: service
   lifecycle: production
   owner: logistics-team
   system: inventory-system
-
+  consumesApis: [erp-api]
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
@@ -98,14 +67,18 @@ metadata:
   annotations:
     temporal/workflow: order-fulfillment
     redis/instance: order-state-01
+    backstage.io/techdocs-ref: dir:./order-system
   tags: [c#, saga-pattern]
 spec:
   type: service
   lifecycle: production
   owner: orders-team
   system: order-system
-
-# ======== CUSTOMER EXPERIENCE ========
+  dependencies:
+    - component: payment-orchestrator
+      type: dependsOn
+    - component: inventory-sync
+      type: dependsOn
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
@@ -115,13 +88,14 @@ metadata:
   annotations:
     vertex-ai/model: recos-2024q2
     bigquery/dataset: user-behavior
+    backstage.io/techdocs-ref: dir:./recommendations
   tags: [python, pytorch]
 spec:
   type: service
   lifecycle: production
   owner: data-team
   system: personalization
-
+  consumesApis: [product-api]
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
@@ -131,14 +105,16 @@ metadata:
   annotations:
     redis/instance: cart-cluster-01
     newrelic/apm: cart-service
+    backstage.io/techdocs-ref: dir:./cart-service
   tags: [nodejs, redis]
 spec:
   type: service
   lifecycle: production
   owner: checkout-team
   system: cart-system
-
-# ======== OPERATIONAL TOOLS ========
+  dependencies:
+    - component: inventory-sync
+      type: dependsOn
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
@@ -148,13 +124,13 @@ metadata:
   annotations:
     hashicorp/vault: promo-codes
     airflow/dag: promo-sync
+    backstage.io/techdocs-ref: dir:./promotions
   tags: [ruby, react-admin]
 spec:
   type: tool
   lifecycle: production
   owner: marketing-team
   system: internal-tools
-
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
@@ -164,14 +140,13 @@ metadata:
   annotations:
     contentful/space-id: marketing-space
     cloudfront/distribution: cms-cdn
+    backstage.io/techdocs-ref: dir:./cms
   tags: [typescript, contentful]
 spec:
   type: service
   lifecycle: production
   owner: content-team
   system: content-system
-
-# ======== OBSERVABILITY ========
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
@@ -181,13 +156,13 @@ metadata:
   annotations:
     opensearch/cluster: logs-prod-01
     fluentbit/config: v2
+    backstage.io/techdocs-ref: dir:./telemetry
   tags: [go, observability]
 spec:
   type: pipeline
   lifecycle: production
   owner: platform-team
   system: observability
-
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
@@ -197,14 +172,13 @@ metadata:
   annotations:
     prometheus/alertmanager: true
     grafana/dashboard: business-kpis
+    backstage.io/techdocs-ref: dir:./anomaly-detection
   tags: [python, prometheus]
 spec:
   type: service
   lifecycle: experimental
   owner: data-team
   system: observability
-
-# ======== MOBILE EXPERIENCE ========
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
@@ -214,14 +188,13 @@ metadata:
   annotations:
     appcenter/groups: mobile-team
     firebase/project: mobile-analytics
+    backstage.io/techdocs-ref: dir:./mobile-sdk
   tags: [kotlin, swift]
 spec:
   type: library
   lifecycle: production
   owner: mobile-team
   system: mobile-platform
-
-# ======== LEGACY INTEGRATION ========
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
@@ -231,14 +204,14 @@ metadata:
   annotations:
     sap/version: ecc6.0
     mulesoft/connector: sap-01
+    backstage.io/techdocs-ref: dir:./erp-adapter
   tags: [java, sap]
 spec:
   type: service
   lifecycle: production
   owner: enterprise-team
   system: legacy-integration
-
-# ======== EMERGING TECH ========
+  providesApis: [erp-api]
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
@@ -248,13 +221,13 @@ metadata:
   annotations:
     arkit/version: 3.0
     unity/project: tryon-2024
+    backstage.io/techdocs-ref: dir:./virtual-tryon
   tags: [unity, ar]
 spec:
   type: service
   lifecycle: experimental
   owner: innovation-team
   system: emerging-tech
-
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
@@ -264,9 +237,25 @@ metadata:
   annotations:
     hyperledger/fabric: loyalty-chain
     etherscan/contract: 0x123...abc
+    backstage.io/techdocs-ref: dir:./loyalty-blockchain
   tags: [solidity, blockchain]
 spec:
   type: service
   lifecycle: development
   owner: blockchain-team
   system: loyalty-system
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: product-api
+  description: Core product catalog GraphQL API
+  annotations:
+    graphql/schema: https://api.example.com/product-schema
+    backstage.io/techdocs-ref: dir:./product-api
+  tags: [graphql, nodejs]
+spec:
+  type: api
+  lifecycle: production
+  owner: product-team
+  system: core-services
