@@ -1,13 +1,16 @@
+# Payment Orchestrator Component
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: payment-orchestrator
-  description: Distributed payment processing with PSP failover
+  description: Distributed payment processing with PSP failover and robust error tracking.
   annotations:
     vault.io/psp-credentials: payment-secrets-v3
     sentry.io/project: payment-errors
     backstage.io/techdocs-ref: dir:./payment-system
     example.com/arch-decision: "ADR-001"
+    contact.email: payments-team@example.com
+    release.version: "1.3.2"
   links:
     - url: https://api-docs.example.com/payments
       title: API Documentation
@@ -16,7 +19,7 @@ metadata:
 spec:
   type: service
   lifecycle: production
-  owner: unknown
+  owner: default
   system: payment-system
   providesApis: [payment-api]
   consumesApis: [fraud-api]
@@ -28,37 +31,43 @@ spec:
     - component: cart-service
       type: dependsOn
 ---
+# Fraud Detector Component
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: fraud-detector
-  description: Real-time transaction risk analysis using ML
+  description: Real-time transaction risk analysis using machine learning.
   annotations:
     sagemaker/model: fraud-model-v5
     kafka/topic: transactions-raw
     backstage.io/techdocs-ref: dir:./fraud-detector
+    contact.email: fraud-team@example.com
+    release.version: "2.0.0"
   tags: [python, tensorflow, fintech]
 spec:
   type: service
   lifecycle: production
-  owner: unknown
+  owner: default
   system: payment-system
   providesApis: [fraud-api]
 ---
+# Order Orchestrator Component
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: order-orchestrator
-  description: Distributed transaction coordinator for orders
+  description: Distributed transaction coordinator for order processing using the saga pattern.
   annotations:
     temporal/workflow: order-fulfillment
     redis/instance: order-state-01
     backstage.io/techdocs-ref: dir:./order-system
+    contact.email: orders-team@example.com
+    release.version: "1.7.4"
   tags: [c#, saga-pattern]
 spec:
   type: service
   lifecycle: production
-  owner: unknown
+  owner: default
   system: order-system
   dependencies:
     - component: payment-orchestrator
@@ -68,20 +77,23 @@ spec:
     - component: fraud-detector
       type: dependsOn
 ---
+# Cart Service Component
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: cart-service
-  description: Distributed shopping cart with Redis caching
+  description: Distributed shopping cart with integrated Redis caching for enhanced performance.
   annotations:
     redis/instance: cart-cluster-01
     newrelic/apm: cart-service
     backstage.io/techdocs-ref: dir:./cart-service
+    contact.email: commerce-team@example.com
+    release.version: "3.1.0"
   tags: [nodejs, redis]
 spec:
   type: service
   lifecycle: production
-  owner: unknown
+  owner: default
   system: cart-system
   dependencies:
     - component: inventory-sync
@@ -89,20 +101,23 @@ spec:
     - component: payment-orchestrator
       type: dependsOn
 ---
+# Inventory Sync Component
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: inventory-sync
-  description: Real-time warehouse inventory synchronization
+  description: Real-time synchronisation of warehouse inventory with ERP integration.
   annotations:
     aws/eventbridge: inventory-events
     warehouse/erp: sap-s4hana
     backstage.io/techdocs-ref: dir:./inventory
+    contact.email: warehouse-team@example.com
+    release.version: "2.2.1"
   tags: [go, kafka, aws]
 spec:
   type: service
   lifecycle: production
-  owner: unknown
+  owner: default
   system: inventory-system
   consumesApis: [erp-api]
   dependencies:
@@ -111,42 +126,180 @@ spec:
     - component: order-orchestrator
       type: dependsOn
 ---
+# ERP Adapter Component (New)
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: erp-adapter
+  description: Adapter to bridge warehouse ERP systems with inventory synchronisation services.
+  annotations:
+    sap/connection: sap-s4hana-connector
+    backstage.io/techdocs-ref: dir:./erp-adapter
+    contact.email: integration-team@example.com
+    release.version: "1.0.0"
+  tags: [java, sap, integration]
+spec:
+  type: service
+  lifecycle: production
+  owner: default
+  system: inventory-system
+  providesApis: [erp-api]
+---
+# Analytics Service Component (New)
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: analytics-service
+  description: Service for processing payment and transaction data to generate real-time analytics.
+  annotations:
+    elasticsearch/cluster: analytics-es-cluster
+    backstage.io/techdocs-ref: dir:./analytics
+    contact.email: analytics-team@example.com
+    release.version: "0.9.5-beta"
+  tags: [python, spark, analytics]
+spec:
+  type: service
+  lifecycle: production
+  owner: default
+  system: analytics-system
+  consumesApis: [payment-api, fraud-api]
+  providesApis: [analytics-api]
+---
+# Notification Service Component (New)
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: notification-service
+  description: Service for dispatching email and SMS notifications for order updates.
+  annotations:
+    twilio/api: sms-notifications
+    backstage.io/techdocs-ref: dir:./notifications
+    contact.email: notifications-team@example.com
+    release.version: "1.2.3"
+  tags: [nodejs, communications]
+spec:
+  type: service
+  lifecycle: production
+  owner: default
+  system: notification-system
+  providesApis: [notification-api]
+  dependencies:
+    - component: order-orchestrator
+      type: dependsOn
+---
+# Customer Profile Component (New)
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: customer-profile
+  description: Service managing customer data and profile information for enhanced user experiences.
+  annotations:
+    mongodb/cluster: customer-mongo-cluster
+    backstage.io/techdocs-ref: dir:./customer-profile
+    contact.email: customer-team@example.com
+    release.version: "1.0.0"
+  tags: [python, mongodb, fintech]
+spec:
+  type: service
+  lifecycle: production
+  owner: default
+  system: customer-system
+  providesApis: [customer-api]
+---
+# Payment System
 apiVersion: backstage.io/v1alpha1
 kind: System
 metadata:
   name: payment-system
-  description: Payment processing and orchestration system
+  description: Payment processing and orchestration system.
+  annotations:
+    contact.email: payments-system@example.com
+    release.version: "4.5.0"
 spec:
   type: service
   lifecycle: production
-  owner: unknown
+  owner: default
 ---
+# Order System
 apiVersion: backstage.io/v1alpha1
 kind: System
 metadata:
   name: order-system
-  description: Order management and fulfillment system
+  description: Order management and fulfilment system.
+  annotations:
+    contact.email: orders-system@example.com
+    release.version: "3.8.2"
 spec:
   type: service
   lifecycle: production
-  owner: unknown
+  owner: default
 ---
+# Cart System
 apiVersion: backstage.io/v1alpha1
 kind: System
 metadata:
   name: cart-system
-  description: Shopping cart and checkout system
+  description: Shopping cart and checkout system.
+  annotations:
+    contact.email: cart-system@example.com
+    release.version: "2.7.1"
 spec:
   type: service
   lifecycle: production
-  owner: unknown
+  owner: default
 ---
+# Inventory System
 apiVersion: backstage.io/v1alpha1
 kind: System
 metadata:
   name: inventory-system
-  description: Warehouse and inventory management system
+  description: Warehouse and inventory management system.
+  annotations:
+    contact.email: inventory-system@example.com
+    release.version: "5.0.0"
 spec:
   type: service
   lifecycle: production
-  owner: unknown
+  owner: default
+---
+# Analytics System (New)
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: analytics-system
+  description: System for data analytics and reporting.
+  annotations:
+    contact.email: analytics-system@example.com
+    release.version: "0.9.5-beta"
+spec:
+  type: service
+  lifecycle: production
+  owner: default
+---
+# Notification System (New)
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: notification-system
+  description: System dedicated to notification services and communications.
+  annotations:
+    contact.email: notification-system@example.com
+    release.version: "1.2.3"
+spec:
+  type: service
+  lifecycle: production
+  owner: default
+---
+# Customer System (New)
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: customer-system
+  description: System for managing customer data and engagement.
+  annotations:
+    contact.email: customer-system@example.com
+    release.version: "1.0.0"
+spec:
+  type: service
+  lifecycle: production
+  owner: default
