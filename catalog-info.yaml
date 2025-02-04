@@ -13,7 +13,10 @@ metadata:
       title: API Documentation
       icon: api
   tags: [java, stripe, paypal]
-spec: {}
+spec:
+  type: service
+  lifecycle: production
+  owner: unknown
   type: service
   lifecycle: production
   system: payment-system
@@ -37,7 +40,10 @@ metadata:
     kafka/topic: transactions-raw
     backstage.io/techdocs-ref: dir:./fraud-detector
   tags: [python, tensorflow, fintech]
-spec: {}
+spec:
+  type: service
+  lifecycle: production
+  owner: unknown
   type: service
   lifecycle: production
   system: payment-system
@@ -53,7 +59,10 @@ metadata:
     redis/instance: order-state-01
     backstage.io/techdocs-ref: dir:./order-system
   tags: [c#, saga-pattern]
-spec: {}
+spec:
+  type: service
+  lifecycle: production
+  owner: unknown
   type: service
   lifecycle: production
   system: order-system
@@ -75,7 +84,10 @@ metadata:
     newrelic/apm: cart-service
     backstage.io/techdocs-ref: dir:./cart-service
   tags: [nodejs, redis]
-spec: {}
+spec:
+  type: service
+  lifecycle: production
+  owner: unknown
   type: service
   lifecycle: production
   system: cart-system
@@ -95,7 +107,10 @@ metadata:
     warehouse/erp: sap-s4hana
     backstage.io/techdocs-ref: dir:./inventory
   tags: [go, kafka, aws]
-spec: {}
+spec:
+  type: service
+  lifecycle: production
+  owner: unknown
   type: service
   lifecycle: production
   system: inventory-system
@@ -111,25 +126,37 @@ kind: System
 metadata:
   name: payment-system
   description: Payment processing and orchestration system
-spec: {}
+spec:
+  type: service
+  lifecycle: production
+  owner: unknown
 ---
 apiVersion: backstage.io/v1alpha1
 kind: System
 metadata:
   name: order-system
   description: Order management and fulfillment system
-spec: {}
+spec:
+  type: service
+  lifecycle: production
+  owner: unknown
 ---
 apiVersion: backstage.io/v1alpha1
 kind: System
 metadata:
   name: cart-system
   description: Shopping cart and checkout system
-spec: {}
+spec:
+  type: service
+  lifecycle: production
+  owner: unknown
 ---
 apiVersion: backstage.io/v1alpha1
 kind: System
 metadata:
   name: inventory-system
   description: Warehouse and inventory management system
-spec: {}
+spec:
+  type: service
+  lifecycle: production
+  owner: unknown
