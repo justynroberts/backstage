@@ -2,6 +2,295 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
+  name: python-service
+  title: Python Microservice
+  description: Scaffold a production-ready Python service with FastAPI/Flask
+spec:
+  type: service
+  parameters:
+    - title: Python Service Setup
+      properties:
+        name:
+          title: Service Name
+          type: string
+          description: kebab-case name for the service
+        framework:
+          title: Web Framework
+          type: string
+          enum: [fastapi, flask, django]
+          default: fastapi
+        python_version:
+          title: Python Version
+          type: string
+          default: "3.11"
+  steps:
+    - id: scaffold
+      name: Generate
+      action: fetch:template
+      input:
+        url: ./templates/python-service
+        values:
+          name: "{{ parameters.name }}"
+          framework: "{{ parameters.framework }}"
+          python_version: "{{ parameters.python_version }}"
+    - id: copyToGithub
+      name: Copy to GitHub Repository
+      action: publish:github
+      input:
+        repoUrl: "https://github.com/yourorg/{{ parameters.name }}"
+        description: "Initial commit for Python service"
+
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: nodejs-service
+  title: Node.js Service
+  description: Scaffold a TypeScript Node.js service with Express/NestJS
+spec:
+  type: service
+  parameters:
+    - title: Node.js Setup
+      properties:
+        name:
+          title: Service Name
+          type: string
+        package_manager:
+          title: Package Manager
+          type: string
+          enum: [npm, yarn, pnpm]
+          default: npm
+        framework:
+          title: Framework
+          type: string
+          enum: [express, nestjs, hapi]
+          default: express
+  steps:
+    - id: scaffold
+      name: Generate
+      action: fetch:template
+      input:
+        url: ./templates/node-service
+        values:
+          name: "{{ parameters.name }}"
+          package_manager: "{{ parameters.package_manager }}"
+          framework: "{{ parameters.framework }}"
+    - id: copyToGithub
+      name: Copy to GitHub Repository
+      action: publish:github
+      input:
+        repoUrl: "https://github.com/yourorg/{{ parameters.name }}"
+        description: "Initial commit for Node.js service"
+
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: java-service
+  title: Java Spring Boot Service
+  description: Generate a Spring Boot service with Gradle/Maven
+spec:
+  type: service
+  parameters:
+    - title: Java Service Setup
+      properties:
+        name:
+          title: Service Name
+          type: string
+        build_tool:
+          title: Build Tool
+          type: string
+          enum: [gradle, maven]
+          default: gradle
+        java_version:
+          title: Java Version
+          type: string
+          default: "21"
+  steps:
+    - id: scaffold
+      name: Generate
+      action: fetch:template
+      input:
+        url: ./templates/java-service
+        values:
+          name: "{{ parameters.name }}"
+          build_tool: "{{ parameters.build_tool }}"
+          java_version: "{{ parameters.java_version }}"
+    - id: copyToGithub
+      name: Copy to GitHub Repository
+      action: publish:github
+      input:
+        repoUrl: "https://github.com/yourorg/{{ parameters.name }}"
+        description: "Initial commit for Java service"
+
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: go-service
+  title: Go Microservice
+  description: Scaffold a Go service with Gin/Fiber framework
+spec:
+  type: service
+  parameters:
+    - title: Go Service Setup
+      properties:
+        name:
+          title: Service Name
+          type: string
+        framework:
+          title: Web Framework
+          type: string
+          enum: [gin, fiber, stdlib]
+          default: gin
+        go_version:
+          title: Go Version
+          type: string
+          default: "1.21"
+  steps:
+    - id: scaffold
+      name: Generate
+      action: fetch:template
+      input:
+        url: ./templates/go-service
+        values:
+          name: "{{ parameters.name }}"
+          framework: "{{ parameters.framework }}"
+          go_version: "{{ parameters.go_version }}"
+    - id: copyToGithub
+      name: Copy to GitHub Repository
+      action: publish:github
+      input:
+        repoUrl: "https://github.com/yourorg/{{ parameters.name }}"
+        description: "Initial commit for Go service"
+
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: react-frontend
+  title: React Frontend
+  description: Create a React application with Vite/Next.js
+spec:
+  type: service
+  parameters:
+    - title: React Setup
+      properties:
+        name:
+          title: App Name
+          type: string
+        framework:
+          title: Framework
+          type: string
+          enum: [vite, nextjs, remix]
+          default: vite
+        styling:
+          title: Styling Solution
+          type: string
+          enum: [css, scss, styled-components, tailwind]
+          default: tailwind
+  steps:
+    - id: scaffold
+      name: Generate
+      action: fetch:template
+      input:
+        url: ./templates/react-app
+        values:
+          name: "{{ parameters.name }}"
+          framework: "{{ parameters.framework }}"
+          styling: "{{ parameters.styling }}"
+    - id: copyToGithub
+      name: Copy to GitHub Repository
+      action: publish:github
+      input:
+        repoUrl: "https://github.com/yourorg/{{ parameters.name }}"
+        description: "Initial commit for React frontend"
+
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: terraform-module
+  title: Terraform Module
+  description: Scaffold a reusable Terraform module
+spec:
+  type: library
+  parameters:
+    - title: Terraform Setup
+      properties:
+        name:
+          title: Module Name
+          type: string
+        cloud:
+          title: Cloud Provider
+          type: string
+          enum: [aws, gcp, azure, multi-cloud]
+          default: aws
+        terraform_version:
+          title: Terraform Version
+          type: string
+          default: "1.6"
+  steps:
+    - id: scaffold
+      name: Generate
+      action: fetch:template
+      input:
+        url: ./templates/terraform-module
+        values:
+          name: "{{ parameters.name }}"
+          cloud: "{{ parameters.cloud }}"
+          terraform_version: "{{ parameters.terraform_version }}"
+    - id: copyToGithub
+      name: Copy to GitHub Repository
+      action: publish:github
+      input:
+        repoUrl: "https://github.com/yourorg/{{ parameters.name }}"
+        description: "Initial commit for Terraform module"
+
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: helm-chart
+  title: Helm Chart
+  description: Generate a production-ready Helm chart
+spec:
+  type: library
+  parameters:
+    - title: Helm Chart Setup
+      properties:
+        name:
+          title: Chart Name
+          type: string
+        chart_version:
+          title: Chart Version
+          type: string
+          default: "0.1.0"
+        app_version:
+          title: App Version
+          type: string
+          default: "1.0.0"
+  steps:
+    - id: scaffold
+      name: Generate
+      action: fetch:template
+      input:
+        url: ./templates/helm-chart
+        values:
+          name: "{{ parameters.name }}"
+          chart_version: "{{ parameters.chart_version }}"
+          app_version: "{{ parameters.app_version }}"
+    - id: copyToGithub
+      name: Copy to GitHub Repository
+      action: publish:github
+      input:
+        repoUrl: "https://github.com/yourorg/{{ parameters.name }}"
+        description: "Initial commit for Helm chart"
+
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
   name: dotnet-service
   title: .NET Core Service
   description: Scaffold a production-ready .NET Core service with ASP.NET
@@ -35,6 +324,12 @@ spec:
           name: "{{ parameters.name }}"
           framework: "{{ parameters.framework }}"
           dotnet_version: "{{ parameters.dotnet_version }}"
+    - id: copyToGithub
+      name: Copy to GitHub Repository
+      action: publish:github
+      input:
+        repoUrl: "https://github.com/yourorg/{{ parameters.name }}"
+        description: "Initial commit for .NET Core service"
 
 ---
 apiVersion: scaffolder.backstage.io/v1beta3
@@ -73,6 +368,12 @@ spec:
           name: "{{ parameters.name }}"
           framework: "{{ parameters.framework }}"
           rust_version: "{{ parameters.rust_version }}"
+    - id: copyToGithub
+      name: Copy to GitHub Repository
+      action: publish:github
+      input:
+        repoUrl: "https://github.com/yourorg/{{ parameters.name }}"
+        description: "Initial commit for Rust service"
 
 ---
 apiVersion: scaffolder.backstage.io/v1beta3
@@ -111,6 +412,12 @@ spec:
           name: "{{ parameters.name }}"
           styling: "{{ parameters.styling }}"
           angular_version: "{{ parameters.angular_version }}"
+    - id: copyToGithub
+      name: Copy to GitHub Repository
+      action: publish:github
+      input:
+        repoUrl: "https://github.com/yourorg/{{ parameters.name }}"
+        description: "Initial commit for Angular frontend"
 
 ---
 apiVersion: scaffolder.backstage.io/v1beta3
@@ -149,6 +456,12 @@ spec:
           name: "{{ parameters.name }}"
           platform: "{{ parameters.platform }}"
           flutter_version: "{{ parameters.flutter_version }}"
+    - id: copyToGithub
+      name: Copy to GitHub Repository
+      action: publish:github
+      input:
+        repoUrl: "https://github.com/yourorg/{{ parameters.name }}"
+        description: "Initial commit for Flutter app"
 
 ---
 apiVersion: scaffolder.backstage.io/v1beta3
@@ -187,6 +500,12 @@ spec:
           name: "{{ parameters.name }}"
           framework: "{{ parameters.framework }}"
           go_version: "{{ parameters.go_version }}"
+    - id: copyToGithub
+      name: Copy to GitHub Repository
+      action: publish:github
+      input:
+        repoUrl: "https://github.com/yourorg/{{ parameters.name }}"
+        description: "Initial commit for Kubernetes operator"
 
 ---
 apiVersion: scaffolder.backstage.io/v1beta3
@@ -225,3 +544,97 @@ spec:
           name: "{{ parameters.name }}"
           runtime: "{{ parameters.runtime }}"
           memory: "{{ parameters.memory }}"
+    - id: copyToGithub
+      name: Copy to GitHub Repository
+      action: publish:github
+      input:
+        repoUrl: "https://github.com/yourorg/{{ parameters.name }}"
+        description: "Initial commit for AWS Lambda function"
+
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: graphql-api-service
+  title: GraphQL API Service
+  description: Scaffold a production-ready GraphQL API service using Node.js and Apollo Server
+spec:
+  type: service
+  parameters:
+    - title: GraphQL Service Setup
+      properties:
+        name:
+          title: Service Name
+          type: string
+          description: Provide a unique name for the GraphQL service in kebab-case
+        package_manager:
+          title: Package Manager
+          type: string
+          enum: [npm, yarn, pnpm]
+          default: npm
+          description: Select your preferred package manager
+        apollo_version:
+          title: Apollo Server Version
+          type: string
+          default: "4.0"
+          description: Specify the Apollo Server version to use
+  steps:
+    - id: scaffold
+      name: Generate
+      action: fetch:template
+      input:
+        url: ./templates/graphql-api-service
+        values:
+          name: "{{ parameters.name }}"
+          package_manager: "{{ parameters.package_manager }}"
+          apollo_version: "{{ parameters.apollo_version }}"
+    - id: copyToGithub
+      name: Copy to GitHub Repository
+      action: publish:github
+      input:
+        repoUrl: "https://github.com/yourorg/{{ parameters.name }}"
+        description: "Initial commit for GraphQL API service"
+
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: react-native-app
+  title: React Native Mobile App
+  description: Scaffold a React Native mobile application with Expo
+spec:
+  type: service
+  parameters:
+    - title: React Native Setup
+      properties:
+        name:
+          title: App Name
+          type: string
+          description: Provide a unique name for the mobile application in kebab-case
+        expo_version:
+          title: Expo Version
+          type: string
+          default: "48.0.0"
+          description: Specify the Expo SDK version to use
+        package_manager:
+          title: Package Manager
+          type: string
+          enum: [npm, yarn, pnpm]
+          default: npm
+          description: Select your preferred package manager
+  steps:
+    - id: scaffold
+      name: Generate
+      action: fetch:template
+      input:
+        url: ./templates/react-native-app
+        values:
+          name: "{{ parameters.name }}"
+          expo_version: "{{ parameters.expo_version }}"
+          package_manager: "{{ parameters.package_manager }}"
+    - id: copyToGithub
+      name: Copy to GitHub Repository
+      action: publish:github
+      input:
+        repoUrl: "https://github.com/yourorg/{{ parameters.name }}"
+        description: "Initial commit for React Native mobile app"
