@@ -16,7 +16,7 @@ metadata:
 spec:
   type: service
   lifecycle: production
-  owner: payments-team
+  owner: development/guest
   system: payment-system
   providesApis: [payment-api]
   consumesApis: [fraud-api]
@@ -41,7 +41,7 @@ metadata:
 spec:
   type: service
   lifecycle: production
-  owner: security-team
+  owner: development/guest
   system: payment-system
   providesApis: [fraud-api]
 ---
@@ -58,7 +58,7 @@ metadata:
 spec:
   type: service
   lifecycle: production
-  owner: orders-team
+  owner: development/guest
   system: order-system
   dependencies:
     - component: payment-orchestrator
@@ -81,7 +81,7 @@ metadata:
 spec:
   type: service
   lifecycle: production
-  owner: checkout-team
+  owner: development/guest
   system: cart-system
   dependencies:
     - component: inventory-sync
@@ -102,7 +102,7 @@ metadata:
 spec:
   type: service
   lifecycle: production
-  owner: logistics-team
+  owner: development/guest
   system: inventory-system
   consumesApis: [erp-api]
   dependencies:
@@ -117,7 +117,7 @@ metadata:
   name: payment-system
   description: Payment processing and orchestration system
 spec:
-  owner: payments-team
+  owner: development/guest
 ---
 apiVersion: backstage.io/v1alpha1
 kind: System
@@ -125,7 +125,7 @@ metadata:
   name: order-system
   description: Order management and fulfillment system
 spec:
-  owner: orders-team
+  owner: development/guest
 ---
 apiVersion: backstage.io/v1alpha1
 kind: System
@@ -133,7 +133,7 @@ metadata:
   name: cart-system
   description: Shopping cart and checkout system
 spec:
-  owner: checkout-team
+  owner: development/guest
 ---
 apiVersion: backstage.io/v1alpha1
 kind: System
@@ -141,60 +141,4 @@ metadata:
   name: inventory-system
   description: Warehouse and inventory management system
 spec:
-  owner: logistics-team
----
-apiVersion: backstage.io/v1alpha1
-kind: Group
-metadata:
-  name: payments-team
-  description: Payments engineering team
-spec:
-  type: team
-  profile:
-    displayName: Payments Team
-    email: payments-team@example.com
-  members:
-    - user: alice
-    - user: bob
----
-apiVersion: backstage.io/v1alpha1
-kind: Group
-metadata:
-  name: orders-team
-  description: Order management team
-spec:
-  type: team
-  profile:
-    displayName: Orders Team
-    email: orders-team@example.com
-  members:
-    - user: charlie
-    - user: dave
----
-apiVersion: backstage.io/v1alpha1
-kind: Group
-metadata:
-  name: checkout-team
-  description: Checkout and cart service team
-spec:
-  type: team
-  profile:
-    displayName: Checkout Team
-    email: checkout-team@example.com
-  members:
-    - user: eve
-    - user: frank
----
-apiVersion: backstage.io/v1alpha1
-kind: Group
-metadata:
-  name: logistics-team
-  description: Logistics and warehouse management team
-spec:
-  type: team
-  profile:
-    displayName: Logistics Team
-    email: logistics-team@example.com
-  members:
-    - user: grace
-    - user: hank
+  owner: development/guest
