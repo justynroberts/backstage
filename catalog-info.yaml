@@ -29,6 +29,89 @@ spec:
       type: dependsOn
 ---
 apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: fraud-detector
+  description: Real-time transaction risk analysis using ML
+  annotations:
+    sagemaker/model: fraud-model-v5
+    kafka/topic: transactions-raw
+    backstage.io/techdocs-ref: dir:./fraud-detector
+  tags: [python, tensorflow, fintech]
+spec:
+  type: service
+  lifecycle: production
+  owner: security-team
+  system: payment-system
+  providesApis: [fraud-api]
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: order-orchestrator
+  description: Distributed transaction coordinator for orders
+  annotations:
+    temporal/workflow: order-fulfillment
+    redis/instance: order-state-01
+    backstage.io/techdocs-ref: dir:./order-system
+  tags: [c#, saga-pattern]
+spec:
+  type: service
+  lifecycle: production
+  owner: orders-team
+  system: order-system
+  dependencies:
+    - component: payment-orchestrator
+      type: dependsOn
+    - component: inventory-sync
+      type: dependsOn
+    - component: fraud-detector
+      type: dependsOn
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: cart-service
+  description: Distributed shopping cart with Redis caching
+  annotations:
+    redis/instance: cart-cluster-01
+    newrelic/apm: cart-service
+    backstage.io/techdocs-ref: dir:./cart-service
+  tags: [nodejs, redis]
+spec:
+  type: service
+  lifecycle: production
+  owner: checkout-team
+  system: cart-system
+  dependencies:
+    - component: inventory-sync
+      type: dependsOn
+    - component: payment-orchestrator
+      type: dependsOn
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: inventory-sync
+  description: Real-time warehouse inventory synchronization
+  annotations:
+    aws/eventbridge: inventory-events
+    warehouse/erp: sap-s4hana
+    backstage.io/techdocs-ref: dir:./inventory
+  tags: [go, kafka, aws]
+spec:
+  type: service
+  lifecycle: production
+  owner: logistics-team
+  system: inventory-system
+  consumesApis: [erp-api]
+  dependencies:
+    - component: erp-adapter
+      type: dependsOn
+    - component: order-orchestrator
+      type: dependsOn
+---
+apiVersion: backstage.io/v1alpha1
 kind: System
 metadata:
   name: payment-system
@@ -115,17 +198,3 @@ spec:
   members:
     - user: grace
     - user: hank
----
-apiVersion: backstage.io/v1alpha1
-kind: Group
-metadata:
-  name: data-team
-  description: Data science and analytics team
-spec:
-  type: team
-  profile:
-    displayName: Data Team
-    email: data-team@example.com
-  members:
-    - user: isaac
-    - user: jack
