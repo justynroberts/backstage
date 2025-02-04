@@ -11,6 +11,7 @@ metadata:
     example.com/arch-decision: "ADR-001"
     contact.email: payments-team@example.com
     release.version: "1.3.2"
+    pagerduty.service: PY2QHED
   links:
     - url: https://api-docs.example.com/payments
       title: API Documentation
@@ -43,6 +44,7 @@ metadata:
     backstage.io/techdocs-ref: dir:./fraud-detector
     contact.email: fraud-team@example.com
     release.version: "2.0.0"
+    pagerduty.service: PY2QHED
   tags: [python, tensorflow, fintech]
 spec:
   type: service
@@ -63,6 +65,7 @@ metadata:
     backstage.io/techdocs-ref: dir:./order-system
     contact.email: orders-team@example.com
     release.version: "1.7.4"
+    pagerduty.service: PY2QHED
   tags: [c#, saga-pattern]
 spec:
   type: service
@@ -89,6 +92,7 @@ metadata:
     backstage.io/techdocs-ref: dir:./cart-service
     contact.email: commerce-team@example.com
     release.version: "3.1.0"
+    pagerduty.service: PY2QHED
   tags: [nodejs, redis]
 spec:
   type: service
@@ -113,6 +117,7 @@ metadata:
     backstage.io/techdocs-ref: dir:./inventory
     contact.email: warehouse-team@example.com
     release.version: "2.2.1"
+    pagerduty.service: PY2QHED
   tags: [go, kafka, aws]
 spec:
   type: service
@@ -137,6 +142,7 @@ metadata:
     backstage.io/techdocs-ref: dir:./erp-adapter
     contact.email: integration-team@example.com
     release.version: "1.0.0"
+    pagerduty.service: PY2QHED
   tags: [java, sap, integration]
 spec:
   type: service
@@ -156,6 +162,7 @@ metadata:
     backstage.io/techdocs-ref: dir:./analytics
     contact.email: analytics-team@example.com
     release.version: "0.9.5-beta"
+    pagerduty.service: PY2QHED
   tags: [python, spark, analytics]
 spec:
   type: service
@@ -176,6 +183,7 @@ metadata:
     backstage.io/techdocs-ref: dir:./notifications
     contact.email: notifications-team@example.com
     release.version: "1.2.3"
+    pagerduty.service: PY2QHED
   tags: [nodejs, communications]
 spec:
   type: service
@@ -198,6 +206,7 @@ metadata:
     backstage.io/techdocs-ref: dir:./customer-profile
     contact.email: customer-team@example.com
     release.version: "1.0.0"
+    pagerduty.service: PY2QHED
   tags: [python, mongodb, fintech]
 spec:
   type: service
@@ -215,6 +224,7 @@ metadata:
   annotations:
     contact.email: payments-system@example.com
     release.version: "4.5.0"
+    pagerduty.service: PY2QHED
 spec:
   type: service
   lifecycle: production
@@ -229,6 +239,7 @@ metadata:
   annotations:
     contact.email: orders-system@example.com
     release.version: "3.8.2"
+    pagerduty.service: PY2QHED
 spec:
   type: service
   lifecycle: production
@@ -243,6 +254,7 @@ metadata:
   annotations:
     contact.email: cart-system@example.com
     release.version: "2.7.1"
+    pagerduty.service: PY2QHED
 spec:
   type: service
   lifecycle: production
@@ -257,6 +269,7 @@ metadata:
   annotations:
     contact.email: inventory-system@example.com
     release.version: "5.0.0"
+    pagerduty.service: PY2QHED
 spec:
   type: service
   lifecycle: production
@@ -271,6 +284,7 @@ metadata:
   annotations:
     contact.email: analytics-system@example.com
     release.version: "0.9.5-beta"
+    pagerduty.service: PY2QHED
 spec:
   type: service
   lifecycle: production
@@ -285,6 +299,7 @@ metadata:
   annotations:
     contact.email: notification-system@example.com
     release.version: "1.2.3"
+    pagerduty.service: PY2QHED
 spec:
   type: service
   lifecycle: production
@@ -299,6 +314,7 @@ metadata:
   annotations:
     contact.email: customer-system@example.com
     release.version: "1.0.0"
+    pagerduty.service: PY2QHED
 spec:
   type: service
   lifecycle: production
