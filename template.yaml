@@ -2,186 +2,226 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: python-service
-  title: Python Microservice
-  description: Scaffold a production-ready Python service with FastAPI/Flask
+  name: dotnet-service
+  title: .NET Core Service
+  description: Scaffold a production-ready .NET Core service with ASP.NET
 spec:
   type: service
   parameters:
-    - title: Python Service Setup
+    - title: .NET Service Setup
       properties:
         name:
           title: Service Name
           type: string
-          description: kebab-case name for the service
-        repo_name:
-          title: Repository Name
-          type: string
-          description: Name of the Git repository
+          description: Provide a unique name for the .NET service
         framework:
           title: Web Framework
           type: string
-          enum: [fastapi, flask, django]
-          default: fastapi
-        python_version:
-          title: Python Version
+          enum: [aspnet, minimal-api]
+          default: aspnet
+          description: Choose the desired ASP.NET flavour
+        dotnet_version:
+          title: .NET Version
           type: string
-          default: "3.11"
+          default: "6.0"
+          description: Specify the target .NET version
   steps:
     - id: scaffold
-      name: Generate Codebase
+      name: Generate
       action: fetch:template
       input:
-        url: ./templates/python-service
+        url: ./templates/dotnet-service
         values:
           name: "{{ parameters.name }}"
           framework: "{{ parameters.framework }}"
-          python_version: "{{ parameters.python_version }}"
-    - id: repo
-      name: Create Repository
-      action: github:repo:create
-      input:
-        repo: "{{ parameters.repo_name }}"
-        owner: "my-org"
-        visibility: public
-    - id: push
-      name: Push Code to Repository
-      action: github:repo:push
-      input:
-        repoUrl: "github.com/my-org/{{ parameters.repo_name }}"
-    - id: ci
-      name: Setup CI/CD Pipeline
-      action: github:actions:setup
-      input:
-        repoUrl: "github.com/my-org/{{ parameters.repo_name }}"
-        workflow: "python-ci.yml"
-    - id: register
-      name: Register in Backstage
-      action: catalog:register
-      input:
-        catalogInfoUrl: "github.com/my-org/{{ parameters.repo_name }}/catalog-info.yaml"
+          dotnet_version: "{{ parameters.dotnet_version }}"
 
 ---
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: nodejs-service
-  title: Node.js Service
-  description: Scaffold a TypeScript Node.js service with Express/NestJS
+  name: rust-service
+  title: Rust Microservice
+  description: Scaffold a Rust microservice using Actix, Rocket or Warp
 spec:
   type: service
   parameters:
-    - title: Node.js Setup
+    - title: Rust Service Setup
       properties:
         name:
           title: Service Name
           type: string
-        repo_name:
-          title: Repository Name
-          type: string
-          description: Name of the Git repository
-        package_manager:
-          title: Package Manager
-          type: string
-          enum: [npm, yarn, pnpm]
-          default: npm
+          description: Provide a unique name for the Rust service
         framework:
-          title: Framework
+          title: Web Framework
           type: string
-          enum: [express, nestjs, hapi]
-          default: express
+          enum: [actix, rocket, warp]
+          default: actix
+          description: Choose the Rust web framework
+        rust_version:
+          title: Rust Version
+          type: string
+          default: "1.70"
+          description: Specify the Rust toolchain version
   steps:
     - id: scaffold
-      name: Generate Codebase
+      name: Generate
       action: fetch:template
       input:
-        url: ./templates/node-service
+        url: ./templates/rust-service
         values:
           name: "{{ parameters.name }}"
-          package_manager: "{{ parameters.package_manager }}"
           framework: "{{ parameters.framework }}"
-    - id: repo
-      name: Create Repository
-      action: github:repo:create
-      input:
-        repo: "{{ parameters.repo_name }}"
-        owner: "my-org"
-        visibility: public
-    - id: push
-      name: Push Code to Repository
-      action: github:repo:push
-      input:
-        repoUrl: "github.com/my-org/{{ parameters.repo_name }}"
-    - id: ci
-      name: Setup CI/CD Pipeline
-      action: github:actions:setup
-      input:
-        repoUrl: "github.com/my-org/{{ parameters.repo_name }}"
-        workflow: "node-ci.yml"
-    - id: register
-      name: Register in Backstage
-      action: catalog:register
-      input:
-        catalogInfoUrl: "github.com/my-org/{{ parameters.repo_name }}/catalog-info.yaml"
+          rust_version: "{{ parameters.rust_version }}"
 
 ---
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: terraform-module
-  title: Terraform Module
-  description: Scaffold a reusable Terraform module with best practices
+  name: angular-frontend
+  title: Angular Frontend
+  description: Create an Angular application using the Angular CLI
 spec:
-  type: library
+  type: service
   parameters:
-    - title: Terraform Setup
+    - title: Angular App Setup
       properties:
         name:
-          title: Module Name
+          title: App Name
           type: string
-        repo_name:
-          title: Repository Name
+          description: Provide a unique name for the Angular application
+        styling:
+          title: Styling Solution
           type: string
-          description: Name of the Git repository
-        cloud:
-          title: Cloud Provider
+          enum: [css, scss, tailwind]
+          default: css
+          description: Choose the styling option for your project
+        angular_version:
+          title: Angular Version
           type: string
-          enum: [aws, gcp, azure, multi-cloud]
-          default: aws
-        terraform_version:
-          title: Terraform Version
-          type: string
-          default: "1.6"
+          default: "15"
+          description: Specify the Angular version to use
   steps:
     - id: scaffold
-      name: Generate Codebase
+      name: Generate
       action: fetch:template
       input:
-        url: ./templates/terraform-module
+        url: ./templates/angular-app
         values:
           name: "{{ parameters.name }}"
-          cloud: "{{ parameters.cloud }}"
-          terraform_version: "{{ parameters.terraform_version }}"
-    - id: repo
-      name: Create Repository
-      action: github:repo:create
+          styling: "{{ parameters.styling }}"
+          angular_version: "{{ parameters.angular_version }}"
+
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: flutter-app
+  title: Flutter Mobile App
+  description: Scaffold a Flutter mobile application for Android and iOS
+spec:
+  type: service
+  parameters:
+    - title: Flutter App Setup
+      properties:
+        name:
+          title: App Name
+          type: string
+          description: Provide a unique name for the Flutter application
+        platform:
+          title: Target Platform
+          type: string
+          enum: [android, ios, both]
+          default: both
+          description: Select the target platform(s)
+        flutter_version:
+          title: Flutter Version
+          type: string
+          default: "3.10"
+          description: Specify the Flutter version to use
+  steps:
+    - id: scaffold
+      name: Generate
+      action: fetch:template
       input:
-        repo: "{{ parameters.repo_name }}"
-        owner: "my-org"
-        visibility: public
-    - id: push
-      name: Push Code to Repository
-      action: github:repo:push
+        url: ./templates/flutter-app
+        values:
+          name: "{{ parameters.name }}"
+          platform: "{{ parameters.platform }}"
+          flutter_version: "{{ parameters.flutter_version }}"
+
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: k8s-operator
+  title: Kubernetes Operator
+  description: Scaffold a Kubernetes Operator in Go using operator-sdk or kubebuilder
+spec:
+  type: service
+  parameters:
+    - title: Operator Setup
+      properties:
+        name:
+          title: Operator Name
+          type: string
+          description: Provide a unique name for the Kubernetes operator
+        framework:
+          title: Operator Framework
+          type: string
+          enum: [operator-sdk, kubebuilder]
+          default: kubebuilder
+          description: Choose the operator framework
+        go_version:
+          title: Go Version
+          type: string
+          default: "1.21"
+          description: Specify the Go version to use
+  steps:
+    - id: scaffold
+      name: Generate
+      action: fetch:template
       input:
-        repoUrl: "github.com/my-org/{{ parameters.repo_name }}"
-    - id: ci
-      name: Setup CI/CD Pipeline
-      action: github:actions:setup
+        url: ./templates/k8s-operator
+        values:
+          name: "{{ parameters.name }}"
+          framework: "{{ parameters.framework }}"
+          go_version: "{{ parameters.go_version }}"
+
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: aws-lambda-function
+  title: AWS Lambda Function
+  description: Scaffold an AWS Lambda function using Node.js or Python
+spec:
+  type: service
+  parameters:
+    - title: Lambda Function Setup
+      properties:
+        name:
+          title: Function Name
+          type: string
+          description: Provide a unique name for the Lambda function
+        runtime:
+          title: Runtime Environment
+          type: string
+          enum: [nodejs, python]
+          default: nodejs
+          description: Select the runtime for your Lambda function
+        memory:
+          title: Memory (MB)
+          type: number
+          default: 128
+          description: Specify the memory allocation for the function
+  steps:
+    - id: scaffold
+      name: Generate
+      action: fetch:template
       input:
-        repoUrl: "github.com/my-org/{{ parameters.repo_name }}"
-        workflow: "terraform-ci.yml"
-    - id: register
-      name: Register in Backstage
-      action: catalog:register
-      input:
-        catalogInfoUrl: "github.com/my-org/{{ parameters.repo_name }}/catalog-info.yaml"
+        url: ./templates/aws-lambda-function
+        values:
+          name: "{{ parameters.name }}"
+          runtime: "{{ parameters.runtime }}"
+          memory: "{{ parameters.memory }}"
