@@ -1,0 +1,306 @@
+# templates.yaml
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: python-service
+  title: Python Microservice
+  description: Scaffold a production-ready Python service with FastAPI/Flask
+spec:
+  parameters:
+    - title: Python Service Setup
+      properties:
+        name:
+          title: Service Name
+          type: string
+          description: kebab-case name for the service
+        framework:
+          title: Web Framework
+          type: string
+          enum: [fastapi, flask, django]
+          default: fastapi
+        python_version:
+          title: Python Version
+          type: string
+          default: "3.11"
+  steps:
+    - id: scaffold
+      name: Generate
+      action: fetch:template
+      input:
+        url: ./templates/python-service
+        values:
+          name: "{{ parameters.name }}"
+          framework: "{{ parameters.framework }}"
+          python_version: "{{ parameters.python_version }}"
+
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: nodejs-service
+  title: Node.js Service
+  description: Scaffold a TypeScript Node.js service with Express/NestJS
+spec:
+  parameters:
+    - title: Node.js Setup
+      properties:
+        name:
+          title: Service Name
+          type: string
+        package_manager:
+          title: Package Manager
+          type: string
+          enum: [npm, yarn, pnpm]
+          default: npm
+        framework:
+          title: Framework
+          type: string
+          enum: [express, nestjs, hapi]
+          default: express
+  steps:
+    - id: scaffold
+      name: Generate
+      action: fetch:template
+      input:
+        url: ./templates/node-service
+        values:
+          name: "{{ parameters.name }}"
+          package_manager: "{{ parameters.package_manager }}"
+          framework: "{{ parameters.framework }}"
+
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: java-service
+  title: Java Spring Boot Service
+  description: Generate a Spring Boot service with Gradle/Maven
+spec:
+  parameters:
+    - title: Java Service Setup
+      properties:
+        name:
+          title: Service Name
+          type: string
+        build_tool:
+          title: Build Tool
+          type: string
+          enum: [gradle, maven]
+          default: gradle
+        java_version:
+          title: Java Version
+          type: string
+          default: "21"
+  steps:
+    - id: scaffold
+      name: Generate
+      action: fetch:template
+      input:
+        url: ./templates/java-service
+        values:
+          name: "{{ parameters.name }}"
+          build_tool: "{{ parameters.build_tool }}"
+          java_version: "{{ parameters.java_version }}"
+
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: go-service
+  title: Go Microservice
+  description: Scaffold a Go service with Gin/Fiber framework
+spec:
+  parameters:
+    - title: Go Service Setup
+      properties:
+        name:
+          title: Service Name
+          type: string
+        framework:
+          title: Web Framework
+          type: string
+          enum: [gin, fiber, stdlib]
+          default: gin
+        go_version:
+          title: Go Version
+          type: string
+          default: "1.21"
+  steps:
+    - id: scaffold
+      name: Generate
+      action: fetch:template
+      input:
+        url: ./templates/go-service
+        values:
+          name: "{{ parameters.name }}"
+          framework: "{{ parameters.framework }}"
+          go_version: "{{ parameters.go_version }}"
+
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: react-frontend
+  title: React Frontend
+  description: Create a React application with Vite/Next.js
+spec:
+  parameters:
+    - title: React Setup
+      properties:
+        name:
+          title: App Name
+          type: string
+        framework:
+          title: Framework
+          type: string
+          enum: [vite, nextjs, remix]
+          default: vite
+        styling:
+          title: Styling Solution
+          type: string
+          enum: [css, scss, styled-components, tailwind]
+          default: tailwind
+  steps:
+    - id: scaffold
+      name: Generate
+      action: fetch:template
+      input:
+        url: ./templates/react-app
+        values:
+          name: "{{ parameters.name }}"
+          framework: "{{ parameters.framework }}"
+          styling: "{{ parameters.styling }}"
+
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: bash-cli-tool
+  title: Bash CLI Tool
+  description: Create a production-grade Bash CLI application
+spec:
+  parameters:
+    - title: CLI Setup
+      properties:
+        name:
+          title: Tool Name
+          type: string
+        description:
+          title: Description
+          type: string
+        version:
+          title: Initial Version
+          type: string
+          default: "0.1.0"
+  steps:
+    - id: scaffold
+      name: Generate
+      action: fetch:template
+      input:
+        url: ./templates/bash-cli
+        values:
+          name: "{{ parameters.name }}"
+          description: "{{ parameters.description }}"
+          version: "{{ parameters.version }}"
+
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: terraform-module
+  title: Terraform Module
+  description: Scaffold a reusable Terraform module
+spec:
+  parameters:
+    - title: Terraform Setup
+      properties:
+        name:
+          title: Module Name
+          type: string
+        cloud:
+          title: Cloud Provider
+          type: string
+          enum: [aws, gcp, azure, multi-cloud]
+          default: aws
+        terraform_version:
+          title: Terraform Version
+          type: string
+          default: "1.6"
+  steps:
+    - id: scaffold
+      name: Generate
+      action: fetch:template
+      input:
+        url: ./templates/terraform-module
+        values:
+          name: "{{ parameters.name }}"
+          cloud: "{{ parameters.cloud }}"
+          terraform_version: "{{ parameters.terraform_version }}"
+
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: docker-container
+  title: Docker Container
+  description: Generate a Dockerfile with best practices
+spec:
+  parameters:
+    - title: Container Setup
+      properties:
+        name:
+          title: Service Name
+          type: string
+        base_image:
+          title: Base Image
+          type: string
+          enum: [alpine, debian, distroless, ubuntu]
+          default: alpine
+        language:
+          title: Primary Language
+          type: string
+          enum: [node, python, go, java]
+          default: node
+  steps:
+    - id: scaffold
+      name: Generate
+      action: fetch:template
+      input:
+        url: ./templates/docker-container
+        values:
+          name: "{{ parameters.name }}"
+          base_image: "{{ parameters.base_image }}"
+          language: "{{ parameters.language }}"
+
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: helm-chart
+  title: Helm Chart
+  description: Generate a production-ready Helm chart
+spec:
+  parameters:
+    - title: Helm Chart Setup
+      properties:
+        name:
+          title: Chart Name
+          type: string
+        chart_version:
+          title: Chart Version
+          type: string
+          default: "0.1.0"
+        app_version:
+          title: App Version
+          type: string
+          default: "1.0.0"
+  steps:
+    - id: scaffold
+      name: Generate
+      action: fetch:template
+      input:
+        url: ./templates/helm-chart
+        values:
+          name: "{{ parameters.name }}"
+          chart_version: "{{ parameters.chart_version }}"
+          app_version: "{{ parameters.app_version }}"
