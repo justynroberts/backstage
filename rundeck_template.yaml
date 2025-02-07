@@ -4,7 +4,7 @@ metadata:
   name: aws-vm-provision
   title: AWS VM Provisioning via Rundeck
   description: >
-   Provision your AWS EC2 Resource here
+    A professional template to provision an AWS Virtual Machine by triggering a Rundeck job.
 spec:
   type: template
   owner: default
