@@ -1,0 +1,60 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: post-data-template
+  title: Post Data Template
+  description: >
+    A template that creates five variables and posts them to an endpoint using an authenticated REST call.
+    You can override the default values during scaffolding.
+spec:
+  owner: default
+  parameters:
+    type: object
+    required:
+      - variable1
+      - variable2
+      - variable3
+      - variable4
+      - variable5
+    properties:
+      variable1:
+        title: Variable 1
+        type: string
+        description: The first variable to post.
+        default: value1
+      variable2:
+        title: Variable 2
+        type: string
+        description: The second variable to post.
+        default: value2
+      variable3:
+        title: Variable 3
+        type: string
+        description: The third variable to post.
+        default: value3
+      variable4:
+        title: Variable 4
+        type: string
+        description: The fourth variable to post.
+        default: value4
+      variable5:
+        title: Variable 5
+        type: string
+        description: The fifth variable to post.
+        default: value5
+
+  steps:
+    - id: post-data
+      name: Post Data to Endpoint
+      action: http:post
+      input:
+        url: "https://api.example.com/submit-data"  # Replace with your actual endpoint
+        headers:
+          Authorization: "Bearer YOUR_AUTH_TOKEN_HERE"  # Replace with your actual token or parameterize as needed
+          Content-Type: "application/json"
+        body:
+          variable1: "{{ parameters.variable1 }}"
+          variable2: "{{ parameters.variable2 }}"
+          variable3: "{{ parameters.variable3 }}"
+          variable4: "{{ parameters.variable4 }}"
+          variable5: "{{ parameters.variable5 }}"
