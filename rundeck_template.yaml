@@ -2,11 +2,9 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: aws-vm-provision
-  title: AWS VM Provisioning Template
+  title: AWS VM Provisioning via Rundeck
   description: >
-    A professional template to provision an AWS Virtual Machine.
-    This template collects configuration details and then triggers a Rundeck job
-    to create the VM using a secure PI token from configuration.
+   Provision your AWS EC2 Resource here
 spec:
   type: template
   owner: default
@@ -18,7 +16,9 @@ spec:
       - instanceType
       - amiId
       - keyPairName
-      - rundeckJobId
+      - jobId
+      - endpoint
+      - authKey
     properties:
       vmName:
         title: VM Name
@@ -55,18 +55,29 @@ spec:
         type: string
         description: The AWS key pair name for SSH access.
         default: my-keypair
-      rundeckJobId:
-        title: Rundeck Job Identifier
+      jobId:
+        title: Rundeck Job ID
         type: string
-        description: The Rundeck job ID that triggers the AWS VM provisioning.
+        description: The identifier of the Rundeck job to execute.
         default: AWS_VM_PROVISION_JOB_ID
+      endpoint:
+        title: Rundeck Endpoint
+        type: string
+        description: The base URL of your Rundeck API.
+        default: https://rundeck.example.com/api/14
+      authKey:
+        title: Rundeck API Key
+        type: string
+        description: The authentication key for Rundeck.
   steps:
-    - id: trigger-aws-vm-provision
-      name: Trigger AWS VM Provisioning
-      action: http:post
+    - id: execute-rundeck-job
+      name: Execute Rundeck Job
+      action: rundeck:execute
       input:
-        url: "{{ config.rundeck.baseUrl }}/job/{{ parameters.rundeckJobId }}/run"
-        body:
+        endpoint: "{{ parameters.endpoint }}"
+        authKey: "{{ parameters.authKey }}"
+        jobId: "{{ parameters.jobId }}"
+        parameters:
           vmName: "{{ parameters.vmName }}"
           region: "{{ parameters.region }}"
           instanceType: "{{ parameters.instanceType }}"
