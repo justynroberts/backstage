@@ -1,60 +1,83 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: post-data-template
-  title: Post Data Template
+  name: aws-vm-provision
+  title: AWS VM Provisioning Template
   description: >
-    A template that creates five variables and posts them to an endpoint using an authenticated REST call.
-    You can override the default values during scaffolding.
+    A professional template to provision an AWS Virtual Machine.
+    The template collects configuration details and then triggers a Rundeck job to create the VM.
 spec:
   owner: default
   parameters:
     type: object
     required:
-      - variable1
-      - variable2
-      - variable3
-      - variable4
-      - variable5
+      - vmName
+      - region
+      - instanceType
+      - amiId
+      - keyPairName
+      - rundeckJobId
+      - piToken
     properties:
-      variable1:
-        title: Variable 1
+      vmName:
+        title: VM Name
         type: string
-        description: The first variable to post.
-        default: value1
-      variable2:
-        title: Variable 2
+        description: The name to assign to the AWS Virtual Machine.
+        default: my-aws-vm
+      region:
+        title: AWS Region
         type: string
-        description: The second variable to post.
-        default: value2
-      variable3:
-        title: Variable 3
+        description: The AWS region where the VM will be provisioned.
+        enum:
+          - us-east-1
+          - us-west-2
+          - eu-west-1
+          - ap-southeast-1
+        default: us-east-1
+      instanceType:
+        title: Instance Type
         type: string
-        description: The third variable to post.
-        default: value3
-      variable4:
-        title: Variable 4
+        description: The AWS instance type for the Virtual Machine.
+        enum:
+          - t2.micro
+          - t2.small
+          - t3.medium
+          - m5.large
+        default: t2.micro
+      amiId:
+        title: AMI Identifier
         type: string
-        description: The fourth variable to post.
-        default: value4
-      variable5:
-        title: Variable 5
+        description: The Amazon Machine Image (AMI) identifier to use.
+        default: ami-0abcdef1234567890
+      keyPairName:
+        title: Key Pair Name
         type: string
-        description: The fifth variable to post.
-        default: value5
-
+        description: The AWS key pair name for SSH access.
+        default: my-keypair
+      rundeckJobId:
+        title: Rundeck Job Identifier
+        type: string
+        description: The Rundeck job ID that triggers the AWS VM provisioning.
+        default: AWS_VM_PROVISION_JOB_ID
+      piToken:
+        title: Personal API Token
+        type: string
+        description: The PI token used for authentication with the Rundeck endpoint.
   steps:
-    - id: post-data
-      name: Post Data to Endpoint
+    - id: trigger-aws-vm-provision
+      name: Trigger AWS VM Provisioning
       action: http:post
       input:
-        url: "https://api.example.com/submit-data"  # Replace with your actual endpoint
+        # The Rundeck execution endpoint is configured to trigger the job using its ID.
+        # Adjust the URL as needed to match your Rundeck server configuration.
+        url: "https://rundeck.example.com/api/14/job/{{ parameters.rundeckJobId }}/run"
         headers:
-          Authorization: "Bearer YOUR_AUTH_TOKEN_HERE"  # Replace with your actual token or parameterize as needed
           Content-Type: "application/json"
+          Authorization: "Bearer {{ parameters.piToken }}"
         body:
-          variable1: "{{ parameters.variable1 }}"
-          variable2: "{{ parameters.variable2 }}"
-          variable3: "{{ parameters.variable3 }}"
-          variable4: "{{ parameters.variable4 }}"
-          variable5: "{{ parameters.variable5 }}"
+          vmName: "{{ parameters.vmName }}"
+          region: "{{ parameters.region }}"
+          instanceType: "{{ parameters.instanceType }}"
+          amiId: "{{ parameters.amiId }}"
+          keyPairName: "{{ parameters.keyPairName }}"
+          # You may include additional parameters here if your Rundeck job requires them.
