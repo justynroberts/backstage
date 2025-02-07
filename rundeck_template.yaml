@@ -5,8 +5,10 @@ metadata:
   title: AWS VM Provisioning Template
   description: >
     A professional template to provision an AWS Virtual Machine.
-    The template collects configuration details and then triggers a Rundeck job to create the VM.
+    This template collects configuration details and then triggers a Rundeck job
+    to create the VM using an authenticated PI token.
 spec:
+  type: template
   owner: default
   parameters:
     type: object
@@ -68,8 +70,6 @@ spec:
       name: Trigger AWS VM Provisioning
       action: http:post
       input:
-        # The Rundeck execution endpoint is configured to trigger the job using its ID.
-        # Adjust the URL as needed to match your Rundeck server configuration.
         url: "https://rundeck.example.com/api/14/job/{{ parameters.rundeckJobId }}/run"
         headers:
           Content-Type: "application/json"
@@ -80,4 +80,3 @@ spec:
           instanceType: "{{ parameters.instanceType }}"
           amiId: "{{ parameters.amiId }}"
           keyPairName: "{{ parameters.keyPairName }}"
-          # You may include additional parameters here if your Rundeck job requires them.
