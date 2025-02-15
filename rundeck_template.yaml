@@ -1,10 +1,7 @@
-apiVersion: scaffolder.backstage.io/v1beta3
-kind: Template
-metadata:
   name: aws-vm-provision
   title: AWS VM Provisioning via Rundeck
   description: >
-    A professional template to provision an AWS Virtual Machine by triggering a Rundeck job.
+   Provision your AWS EC2 Resource here
 spec:
   type: template
   owner: default
