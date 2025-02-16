@@ -8,17 +8,25 @@ spec:
   owner: backstage/techdocs-core
   type: service
   parameters:
-    - title: Fill in some steps
-      required:
-        - name
-      properties:
-        name:
-          title: Name
-          type: string
-          description: Name of new project
-          ui:autofocus: true
-          ui:options:
-            rows: 5
+  - title: Fill in some steps
+    required:
+      - name
+      - option1
+      - option2
+    properties:
+      name:
+        title: Name
+        type: string
+        description: Name of new project
+        ui:autofocus: true
+      option1:
+        title: Option 1
+        type: string
+        description: Value for option1.
+      option2:
+        title: Option 2
+        type: string
+        description: Value for option2.
 steps:
   - id: execute-runbook
     name: Execute Runbook
