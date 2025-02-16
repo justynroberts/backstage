@@ -8,35 +8,28 @@ spec:
   owner: backstage/techdocs-core
   type: service
   parameters:
-  - title: Fill in some steps
-    required:
-      - name
-      - option1
-      - option2
-    properties:
-      name:
-        title: Name
-        type: string
-        description: Name of new project
-        ui:autofocus: true
-      option1:
-        title: Option 1
-        type: string
-        description: Value for option1.
-      option2:
-        title: Option 2
-        type: string
-        description: Value for option2.
-steps:
-  - id: execute-runbook
-    name: Execute Runbook
-    action: http:backstage:request
-    input:
-      method: 'POST'
-      path: '/proxy/rundeck'
-      headers:
-        'Content-Type': 'application/json'
-        'X-Auth-Token': ${{ secrets.RUNDECK_AUTH_TOKEN }}
-      body:
-        option1: ${{ parameters.option1 }}
-        option2: ${{ parameters.option2 }}
+    - title: Fill in some steps
+      required:
+        - name
+      properties:
+        name:
+          title: Name
+          type: string
+          description: Name of new project
+          ui:autofocus: true
+          ui:options:
+            rows: 5
+  steps:
+    - id: execute-runbook
+      name: Execute Runbook
+      action: http:backstage:request
+      input:
+        method: 'POST'
+        path: '/proxy/rundeck'
+        headers:
+          'Content-Type': 'application/json'
+          'X-Auth-Token': ${{ secrets.RUNDECK_AUTH_TOKEN }}
+        body:
+          option1: ${{ parameters.option1 }}
+          option2: ${{ parameters.option2 }}
+
