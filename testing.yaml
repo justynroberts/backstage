@@ -1,38 +1,48 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
-# some metadata about the template itself
 metadata:
   name: hello-world-2
   title: Hello World 2
-  description: scaffolder Hello, World template demo
+  description: A template to execute a Rundeck job via an HTTP POST request.
 spec:
   owner: backstage/techdocs-core
   type: service
 
   parameters:
-    - title: Fill in some steps
+    - title: Project Details
       required:
         - name
+        - option1
+        - option2
       properties:
         name:
-          title: Name
+          title: Project Name
           type: string
-          description: Name of new project
+          description: Name of the new project.
           ui:autofocus: true
-          ui:options:
-            rows: 5
+        option1:
+          title: Option 1
+          type: string
+          description: Parameter value for option1.
+        option2:
+          title: Option 2
+          type: string
+          description: Parameter value for option2.
 
-  # here's the steps that are executed in series in the scaffolder backend
 steps:
   - id: execute-runbook
-    name: Execute Runbook
+    name: Execute Rundeck Job
     action: http:backstage:request
     input:
       method: 'POST'
+      # This path will be handled by the proxy configured in your app-config.yaml.
       path: '/proxy/rundeck'
       headers:
         'Content-Type': 'application/json'
+        # Securely pass your Rundeck authentication token via secrets.
         'X-Auth-Token': ${{ secrets.RUNDECK_AUTH_TOKEN }}
       body:
+        # Pass the user-supplied parameters as part of the payload.
+        projectName: ${{ parameters.name }}
         option1: ${{ parameters.option1 }}
         option2: ${{ parameters.option2 }}
