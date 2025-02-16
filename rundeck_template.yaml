@@ -1,4 +1,5 @@
-                 # Specifies that this file is a Backstage template.
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
 metadata:
   name: aws-vm-provision
   title: AWS VM Provisioning via Rundeck
@@ -8,66 +9,66 @@ spec:
   type: template
   owner: default
   parameters:
-    type: object
-    required:
-      - vmName
-      - region
-      - instanceType
-      - amiId
-      - keyPairName
-      - jobId
-      - endpoint
-      - authKey
-    properties:
-      vmName:
-        title: VM Name
-        type: string
-        description: The name to assign to the AWS Virtual Machine.
-        default: my-aws-vm
-      region:
-        title: AWS Region
-        type: string
-        description: The AWS region where the VM will be provisioned.
-        enum:
-          - us-east-1
-          - us-west-2
-          - eu-west-1
-          - ap-southeast-1
-        default: us-east-1
-      instanceType:
-        title: Instance Type
-        type: string
-        description: The AWS instance type for the Virtual Machine.
-        enum:
-          - t2.micro
-          - t2.small
-          - t3.medium
-          - m5.large
-        default: t2.micro
-      amiId:
-        title: AMI Identifier
-        type: string
-        description: The Amazon Machine Image (AMI) identifier to use.
-        default: ami-0abcdef1234567890
-      keyPairName:
-        title: Key Pair Name
-        type: string
-        description: The AWS key pair name for SSH access.
-        default: my-keypair
-      jobId:
-        title: Rundeck Job ID
-        type: string
-        description: The identifier of the Rundeck job to execute.
-        default: AWS_VM_PROVISION_JOB_ID
-      endpoint:
-        title: Rundeck Endpoint
-        type: string
-        description: The base URL of your Rundeck API.
-        default: https://rundeck.example.com/api/14
-      authKey:
-        title: Rundeck API Key
-        type: string
-        description: The authentication key for Rundeck.
+    - title: AWS VM Provisioning
+      required:
+        - vmName
+        - region
+        - instanceType
+        - amiId
+        - keyPairName
+        - jobId
+        - endpoint
+        - authKey
+      properties:
+        vmName:
+          title: VM Name
+          type: string
+          description: The name to assign to the AWS Virtual Machine.
+          default: my-aws-vm
+        region:
+          title: AWS Region
+          type: string
+          description: The AWS region where the VM will be provisioned.
+          enum:
+            - us-east-1
+            - us-west-2
+            - eu-west-1
+            - ap-southeast-1
+          default: us-east-1
+        instanceType:
+          title: Instance Type
+          type: string
+          description: The AWS instance type for the Virtual Machine.
+          enum:
+            - t2.micro
+            - t2.small
+            - t3.medium
+            - m5.large
+          default: t2.micro
+        amiId:
+          title: AMI Identifier
+          type: string
+          description: The Amazon Machine Image (AMI) identifier to use.
+          default: ami-0abcdef1234567890
+        keyPairName:
+          title: Key Pair Name
+          type: string
+          description: The AWS key pair name for SSH access.
+          default: my-keypair
+        jobId:
+          title: Rundeck Job ID
+          type: string
+          description: The identifier of the Rundeck job to execute.
+          default: AWS_VM_PROVISION_JOB_ID
+        endpoint:
+          title: Rundeck Endpoint
+          type: string
+          description: The base URL of your Rundeck API.
+          default: https://rundeck.example.com/api/14
+        authKey:
+          title: Rundeck API Key
+          type: string
+          description: The authentication key for Rundeck.
   steps:
     - id: execute-rundeck-job
       name: Execute Rundeck Job
