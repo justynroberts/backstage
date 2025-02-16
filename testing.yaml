@@ -19,16 +19,16 @@ spec:
           ui:autofocus: true
           ui:options:
             rows: 5
-  steps:
-    - id: execute-runbook
-      name: Execute Runbook
-      action: http:backstage:request
-      input:
-        method: 'POST'
-        path: '/proxy/rundeck'
-        headers:
-          'Content-Type': 'application/json'
-          'X-Auth-Token': ${{ secrets.RUNDECK_AUTH_TOKEN }}
-        body:
-          option1: ${{ parameters.option1 }}
-          option2: ${{ parameters.option2 }}
+steps:
+  - id: execute-runbook
+    name: Execute Runbook
+    action: http:backstage:request
+    input:
+      method: 'POST'
+      path: '/proxy/rundeck'
+      headers:
+        'Content-Type': 'application/json'
+        'X-Auth-Token': ${{ secrets.RUNDECK_AUTH_TOKEN }}
+      body:
+        option1: ${{ parameters.option1 }}
+        option2: ${{ parameters.option2 }}
