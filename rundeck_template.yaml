@@ -1,5 +1,4 @@
-apiVersion: backstage.io/v1alpha1  # Required API version for Backstage templates.
-kind: Template                   # Specifies that this file is a Backstage template.
+                 # Specifies that this file is a Backstage template.
 metadata:
   name: aws-vm-provision
   title: AWS VM Provisioning via Rundeck
