@@ -3,46 +3,32 @@ kind: Template
 metadata:
   name: hello-world-2
   title: Hello World 2
-  description: A template to execute a Rundeck job via an HTTP POST request.
+  description: scaffolder Hello, World template demo
 spec:
   owner: backstage/techdocs-core
   type: service
-
   parameters:
-    - title: Project Details
+    - title: Fill in some steps
       required:
         - name
-        - option1
-        - option2
       properties:
         name:
-          title: Project Name
+          title: Name
           type: string
-          description: Name of the new project.
+          description: Name of new project
           ui:autofocus: true
-        option1:
-          title: Option 1
-          type: string
-          description: Parameter value for option1.
-        option2:
-          title: Option 2
-          type: string
-          description: Parameter value for option2.
-
-steps:
-  - id: execute-runbook
-    name: Execute Rundeck Job
-    action: http:backstage:request
-    input:
-      method: 'POST'
-      # This path will be handled by the proxy configured in your app-config.yaml.
-      path: '/proxy/rundeck'
-      headers:
-        'Content-Type': 'application/json'
-        # Securely pass your Rundeck authentication token via secrets.
-        'X-Auth-Token': ${{ secrets.RUNDECK_AUTH_TOKEN }}
-      body:
-        # Pass the user-supplied parameters as part of the payload.
-        projectName: ${{ parameters.name }}
-        option1: ${{ parameters.option1 }}
-        option2: ${{ parameters.option2 }}
+          ui:options:
+            rows: 5
+  steps:
+    - id: execute-runbook
+      name: Execute Runbook
+      action: http:backstage:request
+      input:
+        method: 'POST'
+        path: '/proxy/rundeck'
+        headers:
+          'Content-Type': 'application/json'
+          'X-Auth-Token': ${{ secrets.RUNDECK_AUTH_TOKEN }}
+        body:
+          option1: ${{ parameters.option1 }}
+          option2: ${{ parameters.option2 }}
