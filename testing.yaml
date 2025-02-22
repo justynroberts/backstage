@@ -1,37 +1,19 @@
----
-apiVersion: scaffolder.backstage.io/v1beta3
+apiVersion: backstage.io/v1beta3
 kind: Template
 metadata:
-  name: HTTP-testing
-  title: Http testing for post/get
-  description: Testing get functionality with get
+  name: run-rundeck-job
+  title: Run Rundeck Job Template
 spec:
-  owner: roadie
+  owner: your-team
   type: service
-
-  parameters:
-    - title: Fill in some params
-      properties:
-        httpGetPath:
-          title: Get Path
-          type: string
-          description: The path you want to get on your backstage instance
-          ui:autofocus: true
-          ui:options:
-            rows: 5
-
   steps:
-    - id: backstage_request
-      name: backstage request
-      action: http:backstage:request
+    - id: run-rundeck-job
+      name: Run Rundeck Job
+      action: rundeck:job:run
       input:
-        method: 'GET'
-        path: '/proxy/snyk/org/<some-org>/project/<some-project-id>/aggregated-issues'
-        headers:
-          test: 'hello'
-          foo: 'bar'
-
-  output:
-    getResponse: '{{ steps.backstage_request.output.body }}'
-    getCode: '{{ steps.backstage_request.output.code }}'
-    getHeaders: '{{ steps.backstage_request.output.headers }}'
+        rundeckUrl: "https://rundeck.example.com"
+        jobId: "your-job-id"
+        apiToken: "your-api-token"
+        parameters:
+          param1: "value1"
+          param2: "value2"
