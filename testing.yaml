@@ -15,8 +15,8 @@ spec:
   parameters:
     - title: Deploy Multicloud Resources
       required:
-        - jobId
-        - projectName
+        - environment
+        - region
       properties:
         environment:
           title: Environment
