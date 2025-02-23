@@ -59,9 +59,7 @@ spec:
           description: >
             Duration in days before the resource is automatically deleted.
           enum:
-            - 7.
-            - 14.
-            - 30.
+           - 7
             
         # User tag to identify the resource owner
         userTag:
