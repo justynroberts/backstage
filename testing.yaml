@@ -18,11 +18,6 @@ spec:
         - jobId
         - projectName
       properties:
-        jobId:
-          title: Job-ID
-          type: string
-          description: The Rundeck job ID to execute
-          ui:field: TextArea
         environment:
           title: Environment
           type: string
