@@ -57,9 +57,11 @@ spec:
           title: Time to Live (TTL)
           type: string
           description: >
-            Duration in hours before the resource is automatically deleted.
-          default: 48
-
+            Duration in days before the resource is automatically deleted.
+          enum:
+            - 7
+            - 14
+            - 30
         # User tag to identify the resource owner
         userTag:
           title: User Tag
