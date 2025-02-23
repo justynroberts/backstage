@@ -1,9 +1,10 @@
+# Backstage Scaffolder Template for Deploying AWS Resources via Rundeck
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: rundeck-job-template
   title: Deploy AWS Resources
-  description: Use this to deploy EC2 Host Resources
+  description: Use this template to deploy EC2 host resources with additional options for AMI, TTL, user tagging, and AWS sizing.
   tags:
     - rundeck
     - job
@@ -11,13 +12,19 @@ metadata:
 spec:
   owner: user:guest
   type: service
-  
+
+  # Define parameters required to deploy the AWS resource
   parameters:
     - title: Deploy Multicloud Resources
       required:
         - environment
         - region
+        - ami
+        - ttl
+        - userTag
+        - instanceType
       properties:
+        # Target environment parameter
         environment:
           title: Environment
           type: string
@@ -26,6 +33,8 @@ spec:
             - dev
             - staging
             - prod
+
+        # AWS region selection
         region:
           title: Region
           type: string
@@ -34,12 +43,54 @@ spec:
             - us-east-1
             - us-west-2
             - eu-west-1
+
+        # Sample AMI parameter with description
+        ami:
+          title: Sample AMI
+          type: string
+          description: >
+            The Amazon Machine Image (AMI) ID to deploy. For example, use 'ami-0abcdef1234567890' for an Ubuntu 20.04 LTS image.
+          default: ami-0abcdef1234567890
+
+        # Time to live (TTL) parameter for resource auto-deletion
+        ttl:
+          title: Time to Live (TTL)
+          type: number
+          description: >
+            Duration in hours before the resource is automatically deleted.
+          default: 48
+
+        # User tag to identify the resource owner
+        userTag:
+          title: User Tag
+          type: string
+          description: >
+            Custom tag to identify the owner of the resource.
+          default: guest
+
+        # AWS instance sizing selection
+        instanceType:
+          title: AWS Instance Type
+          type: string
+          description: >
+            AWS instance sizing for the EC2 host. Choose an instance type such as t2.micro, t2.small, t2.medium, t3.micro, t3.small, or t3.medium.
+          enum:
+            - t2.micro
+            - t2.small
+            - t2.medium
+            - t3.micro
+            - t3.small
+            - t3.medium
+          default: t2.micro
+
+        # Option to wait for job completion
         waitForJob:
           title: Wait for completion
           type: boolean
           description: Wait for job to complete before finishing
           default: true
 
+  # Define the steps to execute the Rundeck job
   steps:
     - id: rundeck-execute
       name: Execute Rundeck Job
@@ -50,8 +101,13 @@ spec:
         parameters:
           ENV: ${{ parameters.environment }}
           REGION: ${{ parameters.region }}
+          AMI: ${{ parameters.ami }}
+          TTL: ${{ parameters.ttl }}
+          USER_TAG: ${{ parameters.userTag }}
+          INSTANCE_TYPE: ${{ parameters.instanceType }}
         waitForJob: ${{ parameters.waitForJob }}
 
+  # Output section to provide useful links post-deployment
   output:
     links:
       - title: Rundeck Execution
