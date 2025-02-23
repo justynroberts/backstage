@@ -53,13 +53,17 @@ spec:
           default: ami-0abcdef1234567890
 
         # Time to live (TTL) parameter for resource auto-deletion
+        # TTL now defined as a string with specific allowed options
         ttl:
           title: Time to Live (TTL)
           type: string
           description: >
-            Duration in days before the resource is automatically deleted.
+            Duration in days before the resource is automatically deleted. Choose one of the following options: 7, 14, or 30 days.
           enum:
-           - 7
+            - "7"
+            - "14"
+            - "30"
+          default: "7"
             
         # User tag to identify the resource owner
         userTag:
