@@ -55,7 +55,7 @@ spec:
         # Time to live (TTL) parameter for resource auto-deletion
         ttl:
           title: Time to Live (TTL)
-          type: number
+          type: string
           description: >
             Duration in hours before the resource is automatically deleted.
           default: 48
