@@ -1,19 +1,43 @@
-apiVersion: backstage.io/v1beta3
+apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: run-rundeck-job
-  title: Run Rundeck Job Template
+  name: rundeck-job-template
+  title: Execute Rundeck Job
+  description: Executes a predefined Rundeck job with parameters
 spec:
-  owner: your-team
+  owner: rundeck-team
   type: service
+  parameters:
+    - title: Rundeck Job Details
+      required:
+        - jobId
+        - projectName
+      properties:
+        jobId:
+          title: Job ID
+          type: string
+          description: The Rundeck Job ID to execute
+        projectName:
+          title: Project Name
+          type: string
+          description: The Rundeck Project Name
+        environment:
+          title: Environment
+          type: string
+          enum: ['dev', 'staging', 'prod']
+        customParam:
+          title: Custom Parameter
+          type: string
+          description: A custom parameter to pass to the job
+
   steps:
-    - id: run-rundeck-job
-      name: Run Rundeck Job
-      action: rundeck:job:run
+    - id: execute-rundeck
+      name: Execute Rundeck Job
+      action: rundeck:execute
       input:
-        rundeckUrl: "https://rundeck.example.com"
-        jobId: "your-job-id"
-        apiToken: "your-api-token"
+        jobId: ${{ parameters.jobId }}
+        projectName: ${{ parameters.projectName }}
         parameters:
-          param1: "value1"
-          param2: "value2"
+          env: ${{ parameters.environment }}
+          custom: ${{ parameters.customParam }}
+        waitForCompletion: true
