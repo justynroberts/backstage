@@ -11,7 +11,7 @@ metadata:
     - automation
 spec:
   owner: user:guest
-  type: orchestration
+  type: rundeck-orchestration
 
   # Define parameters required to deploy the AWS resource
   parameters:
