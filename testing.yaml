@@ -3,10 +3,10 @@ kind: Template
 metadata:
   name: rundeck-job-template
   title: Execute Rundeck Job
-  description: Executes a predefined Rundeck job with parameters
 spec:
-  owner: rundeck-team
+  owner: user:guest
   type: service
+  
   parameters:
     - title: Rundeck Job Details
       required:
@@ -21,15 +21,11 @@ spec:
           title: Project Name
           type: string
           description: The Rundeck Project Name
-        environment:
-          title: Environment
-          type: string
-          enum: ['dev', 'staging', 'prod']
-        customParam:
-          title: Custom Parameter
-          type: string
-          description: A custom parameter to pass to the job
-
+        parameters:
+          title: Job Parameters
+          type: object
+          description: Parameters to pass to the Rundeck job
+  
   steps:
     - id: execute-rundeck
       name: Execute Rundeck Job
@@ -37,7 +33,5 @@ spec:
       input:
         jobId: ${{ parameters.jobId }}
         projectName: ${{ parameters.projectName }}
-        parameters:
-          env: ${{ parameters.environment }}
-          custom: ${{ parameters.customParam }}
+        parameters: ${{ parameters.parameters }}
         waitForCompletion: true
