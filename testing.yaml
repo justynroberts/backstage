@@ -3,6 +3,11 @@ kind: Template
 metadata:
   name: rundeck-job-template
   title: Execute Rundeck Job
+  description: Execute a job in Rundeck with parameters
+  tags:
+    - rundeck
+    - job
+    - automation
 spec:
   owner: user:guest
   type: service
@@ -16,22 +21,48 @@ spec:
         jobId:
           title: Job ID
           type: string
-          description: The Rundeck Job ID to execute
+          description: The Rundeck job ID to execute
+          ui:field: TextArea
         projectName:
           title: Project Name
           type: string
-          description: The Rundeck Project Name
-        parameters:
-          title: Job Parameters
-          type: object
-          description: Parameters to pass to the Rundeck job
-  
+          description: The Rundeck project name
+        environment:
+          title: Environment
+          type: string
+          description: Target environment for the job
+          enum:
+            - dev
+            - staging
+            - prod
+        region:
+          title: Region
+          type: string
+          description: Target AWS region
+          enum:
+            - us-east-1
+            - us-west-2
+            - eu-west-1
+        waitForJob:
+          title: Wait for completion
+          type: boolean
+          description: Wait for job to complete before finishing
+          default: true
+
   steps:
-    - id: execute-rundeck
+    - id: rundeck-execute
       name: Execute Rundeck Job
-      action: rundeck:execute
+      action: rundeck:job:execute
       input:
         jobId: ${{ parameters.jobId }}
         projectName: ${{ parameters.projectName }}
-        parameters: ${{ parameters.parameters }}
-        waitForCompletion: true
+        parameters:
+          ENV: ${{ parameters.environment }}
+          REGION: ${{ parameters.region }}
+        waitForJob: ${{ parameters.waitForJob }}
+
+  output:
+    links:
+      - title: Rundeck Execution
+        url: ${{ steps['rundeck-execute'].output.executionId }}
+        icon: dashboard
