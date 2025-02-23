@@ -2,8 +2,8 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: rundeck-job-template
-  title: Execute Rundeck Job
-  description: Execute a job in Rundeck with parameters
+  title: Deploy AWS Resources
+  description: Use this to deploy EC2 Host Resources
   tags:
     - rundeck
     - job
@@ -13,20 +13,16 @@ spec:
   type: service
   
   parameters:
-    - title: Rundeck Job Details
+    - title: Deploy Multicloud Resources
       required:
         - jobId
         - projectName
       properties:
         jobId:
-          title: Job ID
+          title: Job-ID
           type: string
           description: The Rundeck job ID to execute
           ui:field: TextArea
-        projectName:
-          title: Project Name
-          type: string
-          description: The Rundeck project name
         environment:
           title: Environment
           type: string
@@ -55,7 +51,7 @@ spec:
       action: rundeck:job:execute
       input:
         jobId: ${{ parameters.jobId }}
-        projectName: ${{ parameters.projectName }}
+        projectName: NA
         parameters:
           ENV: ${{ parameters.environment }}
           REGION: ${{ parameters.region }}
