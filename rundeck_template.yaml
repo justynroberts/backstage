@@ -50,7 +50,7 @@ spec:
           type: string
           description: >
             The Amazon Machine Image (AMI) ID to deploy. For example, use 'ami-0abcdef1234567890' for an Ubuntu 20.04 LTS image.
-          default: ami-0abcdef1234567890
+          default: ami-05b10e08d247fb927
 
         # Time to live (TTL) parameter for resource auto-deletion
         # TTL now defined as a string with specific allowed options
